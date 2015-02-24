@@ -4,7 +4,7 @@
 
 <?php 
 
-$segments = array('browser', 'addpost', $row_item['tid'], $row_item['id']);
+$segments = array('main', 'addpost', $row_item['tid'], $row_item['posts_id']);
 
 echo form_open(site_url($segments)); ?>
 

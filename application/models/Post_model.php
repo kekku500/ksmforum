@@ -74,10 +74,55 @@ class Post_model extends CI_Model {
         return $query->result_array();
     }
     
+    public function getPostsJoinUser($tid){
+        $this->db->order_by("pos", "asc");
+        $this->db->join('users', 'users.id = '.$this->table.'.uid');
+        $this->db->select(
+                'posts.id as posts_id,
+                p_pid,
+                tid,
+                content,
+                posts.create_time as posts_create_time,
+                posts.edit_time as posts_edit_time,
+                depth,
+                pos,
+                users.id as users_id,
+                name,
+                usergroup');
+        
+        $query = $this->db->get_where($this->table, array('tid' => $tid));
+                
+        return $query->result_array();
+    }
+    
     public function getPost($pid){
         $query = $this->db->get_where($this->table, array('id' => $pid));
         return $query->row_array();
     }
+    
+        public function getPostJoinUser($pid){
+        $this->db->order_by("pos", "asc");
+        $this->db->join('users', 'users.id = '.$this->table.'.uid');
+        $this->db->select(
+                'posts.id as posts_id,
+                p_pid,
+                tid,
+                content,
+                posts.create_time as posts_create_time,
+                posts.edit_time as posts_edit_time,
+                depth,
+                pos,
+                users.id as users_id,
+                name,
+                usergroup');
+        
+        $query = $this->db->get_where($this->table, array('posts.id' => $pid));
+                
+        return $query->row_array();
+    }
+    
+    
+    
     
     public function addPost($tid, $p_pid, $content){
         $data = array(

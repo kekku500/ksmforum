@@ -195,13 +195,12 @@ class Main extends CI_Controller {
         $data['topic'] = $this->topic_model->get_topic_name($tid);
         $data['topic'] = $this->security->xss_clean($data['topic']);
 
-        $data['rows'] = $this->post_model->getPosts($tid);
-        
+        $data['rows'] = $this->post_model->getPostsJoinUser($tid);
 
         $this->template->body('topic/topic_header', $data);
         foreach ($data['rows'] as $row_item){ 
+           
             $row_item['content'] = $this->security->xss_clean($row_item['content']);
-            $row_item['user_name'] = $this->user_model->getUser($row_item['uid'])['name'];
             $data['row_item'] = $row_item;
             $this->template->body('topic/topic_content', $data);
         }
@@ -271,9 +270,8 @@ class Main extends CI_Controller {
                 $this->form_validation->set_rules('content', 'Sisu', 'required');
                 
                 if($this->form_validation->run() == FALSE){
-                    $data['row_item'] =  $this->post_model->getPost($pid);
+                    $data['row_item'] =  $this->post_model->getPostJoinUser($pid);
                     $data['row_item']['depth'] = 0;
-                    $data['row_item']['user_name'] = $this->user_model->getUser($data['row_item']['uid'])['name'];
                     $this->template->body('topic/topic_content', $data);
                     $this->template->body('forms/addpost_form', $data);
                 }else{
@@ -283,9 +281,8 @@ class Main extends CI_Controller {
                     redirect(site_url($segments));
                 } 
             }else{
-                $data['row_item'] =  $this->post_model->getPost($pid);
+                $data['row_item'] =  $this->post_model->getPostJoinUser($pid);
                 $data['row_item']['depth'] = 0;
-                $data['row_item']['user_name'] = $this->user_model->getUser($data['row_item']['uid'])['name'];
                 $this->template->body('topic/topic_content', $data);
                 $this->template->body('forms/addpost_form', $data);  
             }
