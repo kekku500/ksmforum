@@ -142,7 +142,10 @@ class Post_model extends CI_Model {
     }
     
     public function editPost($pid, $content){
-        
+        $this->db->where('id', $pid);
+        $this->db->update($this->table, array(
+            'content' => $content
+        ));
     }
     
 }

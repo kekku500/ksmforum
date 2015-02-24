@@ -265,36 +265,81 @@ class Main extends CI_Controller {
                 array('Lisa kommentaar', current_url())
             ));
 
-        if($this->auth->isLoggedIn() == true){
-            $this->load->model('user_model');        
+        if($this->auth->isLoggedIn()){ 
+            
             if($this->input->post('form') == 'addpost'){
+
                 $this->form_validation->set_rules('content', 'Sisu', 'required');
                 
-                if($this->form_validation->run() == FALSE){
-                    $data['row_item'] =  $this->post_model->getPostJoinUser($pid);
-                    $data['row_item']['depth'] = 0;
-                    $this->template->body('topic/topic_content', $data);
-                    $this->template->body('forms/addpost_form', $data);
-                }else{
+                if($this->form_validation->run()){
                     $this->post_model->addPost($tid, $pid, $this->input->post('content'));
                     $segments = array('main', 'topic', $tid);
 
                     redirect(site_url($segments));
                 } 
-            }else{
-                $data['row_item'] =  $this->post_model->getPostJoinUser($pid);
+            }
+            $data['row_item'] =  $this->post_model->getPostJoinUser($pid);
+            $data['row_item']['depth'] = 0;
+            $this->template->body('topic/topic_content', $data);
+            $data['title'] = 'Lisa uus kommentaar';
+            $data['callback'] = 'addpost';
+            $data['submit'] = 'Lisa';
+            $data['content'] = 'Kirjuta kommentaar siia';
+            $this->template->body('forms/addpost_form', $data);  
+        }else{
+            echo 'logi sisse neeger';
+        }
+
+    }
+    
+    public function editpost($tid, $pid){
+        $this->load->helper('form');
+	$this->load->library('form_validation');
+        
+        $topic = $this->topic_model->getTopic($tid);
+        $segments = array('main', 'topic', $topic['id']);
+        $this->navigator($topic['fid'], 
+            array(
+                array($topic['name'], site_url($segments)),
+                array('Muuda kommentaari', current_url())
+            ));
+
+        if($this->auth->isLoggedIn()){     
+
+            $post =  $this->post_model->getPostJoinUser($pid);
+            $uid = $post['users_id'];
+            if($this->auth->getUserId() == $uid){
+                if($this->input->post('form') == 'editpost'){
+                    $this->form_validation->set_rules('content', 'Sisu', 'required');
+                    echo 'yeah';
+                    if($this->form_validation->run()){
+
+                        $this->post_model->editPost($pid, $this->input->post('content'));
+
+                        $segments = array('main', 'topic', $tid);
+
+                        redirect(site_url($segments));
+                    } 
+                }
+
+                $data['row_item'] = $post;
                 $data['row_item']['depth'] = 0;
                 $this->template->body('topic/topic_content', $data);
-                $this->template->body('forms/addpost_form', $data);  
+                $data['title'] = 'Muuda kommentaari';
+                $data['callback'] = 'editpost';
+                $data['submit'] = 'Muuda';
+                $data['content'] = $post['content'];
+                $this->template->body('forms/addpost_form', $data); 
+            }else{
+                echo 'vot ei muuda';
             }
-                
-
  
         }else{
             echo 'logi sisse neeger';
         }
 
     }
+    
     
 
     

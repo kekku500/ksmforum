@@ -8,10 +8,15 @@
         
         <?php
         if ($this->auth->isLoggedIn()){
-            $segments = array('main', 'addpost', $row_item['tid'], $row_item['posts_id']);
+            $segmentsadd = array('main', 'addpost', $row_item['tid'], $row_item['posts_id']);
+            $segmentsedit = array('main', 'editpost', $row_item['tid'], $row_item['posts_id']);
            ?>
-           <a style="padding-left: 10px;" href="<?php echo site_url($segments); ?>">Vasta</a>
-        <?php
+           <a style="padding-left: 10px;" href="<?php echo site_url($segmentsadd); ?>">Vasta</a>
+           <?php 
+           if($this->auth->getUserId() == $row_item['users_id']){?>
+          <a style="padding-left: 10px;" href="<?php echo site_url($segmentsedit); ?>">Muuda</a>
+           <?php
+           }
         }
         ?>
      </h5>
