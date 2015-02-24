@@ -9,9 +9,17 @@ class Main extends CI_Controller {
         $this->load->model(array('topic_model', 'post_model', 'forum_model', 'user_model', 'usergroup_model'));
         $this->load->helper('url'); 
         
-        $this->template->prebody('auth_header');
+        $this->check_login(); 
         
-        $this->login();
+        $this->user_controls();
+    }
+    
+    private function user_controls(){
+        if($this->auth->isLoggedIn())
+            $userinfo['user'] = $this->user_model->getUser($this->auth->getUserId());
+        $this->template->prebody('auth_header', (isset($userinfo) ? $userinfo : array()));
+        if(!$this->auth->isLoggedIn())
+            $this->template->prebody('forms/login_form');  
     }
     
     private function end(){
@@ -28,20 +36,19 @@ class Main extends CI_Controller {
         show_404();
     }
     
-    private function login(){  
+    private function check_login(){  
         if($this->auth->isLoggedIn()){
             return;
         }
         
         $this->load->helper('form');   
-	$this->load->library('form_validation');
+        $this->load->library('form_validation');
         
         if($this->input->post('form') == 'login'){
             $this->form_validation->set_rules('user', 'Kasutajanimi', 'required');
             $this->form_validation->set_rules('pass', 'Salasõna', 'required');
         
             if($this->form_validation->run() == FALSE){
-                $this->template->prebody('forms/login_form'/*, $data*/);  
             }else{
                 $this->load->model('user_model');
                 $user = $this->input->post('user');
@@ -49,17 +56,11 @@ class Main extends CI_Controller {
 
                 $userid = $this->user_model->attemptLogin($user, $pass);
 
-                if(!$userid){
-                  $this->template->prebody('forms/login_form'/*, $data*/);  
-                }else{
+                if($userid){
                   $this->auth->login($userid);
-                  $this->login();
                 }
             }  
-        }else{
-            $this->template->prebody('forms/login_form'/*, $data*/);  
         }
-
     }
     
 
