@@ -1,5 +1,7 @@
 <p>Loo foorumeid</p>
-<?php echo validation_errors(); 
+<?php 
+if($this->input->post('form') == 'addforum')
+    echo validation_errors(); 
 
 $segments = array('admin');
 echo form_open(site_url($segments)); ?>

@@ -38,8 +38,20 @@ class Topic_model extends CI_Model {
         
     }
     
-    public function editTopic($tid, $name){
-        
+    public function editTopic($tid, $data){
+        $this->db->where('id', $tid);
+        $this->db->update($this->table, $data);
+    }
+    
+    public function editTopicSet($tid, $set){
+        $set_count = count($set);
+        for($i=0;$i<$set_count;$i++){
+            $d = each($set);
+            $this->db->set($d['key'], $d['value'], false);
+        }
+       
+        $this->db->where('id', $tid);
+        $this->db->update($this->table);
     }
             
     

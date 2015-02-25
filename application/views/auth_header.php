@@ -2,9 +2,9 @@
  
 <?php
 if(!$this->auth->isLoggedIn()){
-    $segments = array('register');
+    $segments = array('main', 'register');
     ?>
-    <a style="padding:5px" href="<?php echo site_url($segments); ?>">Registreeri</a>
+    <a style="padding:5px" href="#">Registreeri</a>
     <a style="padding:5px" href="#">Logi sisse</a>
     <?php
 }else{

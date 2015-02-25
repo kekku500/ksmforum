@@ -14,10 +14,17 @@ class Template extends CI_Loader{
     private $prebody_calls = array();
     private $postbody;
     
+    private $loadvars = array(
+        'title' => 'Tiitel');
+    
     function __construct() {
         $this->ci =& get_instance();
 
         $this->addJS('assets/js/jquery-1.11.2.min.js');
+    }
+    
+    function setTitle($title){
+        $this->loadvars['title'] = $title;
     }
     
     function body($view, $vars = array()){
@@ -33,6 +40,9 @@ class Template extends CI_Loader{
     }
     
     function load($template, $vars = array()){
+        if(count($vars) == 0)
+            $vars = $this->loadvars;
+        
         $this->load_JS_and_CSS();
         
         $vars['body'] = '';

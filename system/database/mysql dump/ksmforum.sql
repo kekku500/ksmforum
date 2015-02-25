@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: 127.0.0.1
--- Generation Time: Feb 24, 2015 at 12:26 PM
+-- Generation Time: Feb 25, 2015 at 09:50 PM
 -- Server version: 5.6.21
 -- PHP Version: 5.6.3
 
@@ -39,8 +39,7 @@ CREATE TABLE IF NOT EXISTS `ci_sessions` (
 --
 
 INSERT INTO `ci_sessions` (`session_id`, `ip_address`, `user_agent`, `last_activity`, `user_data`) VALUES
-('0f2c0515f5e3347f61a25d9397070803', '127.0.0.1', 'Mozilla/5.0 (Windows NT 6.3; WOW64; rv:35.0) Gecko/20100101 Firefox/35.0', 1424775250, ''),
-('e00d6ce5cf79bff324c60c1cf66f662d', '::1', 'Mozilla/5.0 (Windows NT 6.3; WOW64; rv:35.0) Gecko/20100101 Firefox/35.0', 1424776276, 'a:1:{s:7:"user_id";s:1:"8";}');
+('81c0c0374a85175d1eacaa1d2816baac', '::1', 'Mozilla/5.0 (Windows NT 6.2; WOW64; rv:35.0) Gecko/20100101 Firefox/35.0', 1424897388, 'a:7:{s:9:"user_data";s:0:"";s:13:"viewed_topics";s:3:"t13";s:3:"t13";i:1;s:3:"t14";i:1;s:1:"r";s:2:"20";s:1:"t";a:3:{i:0;s:2:"17";i:1;s:2:"13";i:2;s:2:"15";}s:7:"user_id";s:1:"8";}');
 
 -- --------------------------------------------------------
 
@@ -52,23 +51,25 @@ CREATE TABLE IF NOT EXISTS `forums` (
 `id` int(10) unsigned NOT NULL,
   `p_fid` int(10) unsigned DEFAULT NULL,
   `name` varchar(50) NOT NULL,
-  `uid` int(10) unsigned NOT NULL
-) ENGINE=InnoDB AUTO_INCREMENT=24 DEFAULT CHARSET=latin1;
+  `uid` int(10) unsigned NOT NULL,
+  `topic_count` int(10) unsigned NOT NULL,
+  `post_count` int(10) unsigned NOT NULL
+) ENGINE=InnoDB AUTO_INCREMENT=23 DEFAULT CHARSET=latin1;
 
 --
 -- Dumping data for table `forums`
 --
 
-INSERT INTO `forums` (`id`, `p_fid`, `name`, `uid`) VALUES
-(10, 14, 'Uudised', 8),
-(14, NULL, 'Pealehe foorum', 8),
-(15, NULL, 'KSM Foorum', 8),
-(16, NULL, 'Muu', 8),
-(17, 10, 'Uudiste sub', 8),
-(19, NULL, 'Täiesti uus foorum', 8),
-(20, 10, 'Yipee', 8),
-(21, 19, 'Alam', 8),
-(22, 21, 'Epic shizz', 8);
+INSERT INTO `forums` (`id`, `p_fid`, `name`, `uid`, `topic_count`, `post_count`) VALUES
+(10, 14, 'Uudised', 8, 2, 2),
+(14, NULL, 'Pealehe foorum', 8, 0, 0),
+(15, NULL, 'KSM Foorum', 8, 0, 0),
+(16, NULL, 'Muu', 8, 0, 0),
+(17, 10, 'Uudiste sub', 8, 0, 0),
+(19, NULL, 'Täiesti uus foorum', 8, 0, 0),
+(20, 10, 'Yipee', 8, 0, 0),
+(21, 19, 'Alam', 8, 0, 0),
+(22, 21, 'Epic shizz', 8, 0, 0);
 
 -- --------------------------------------------------------
 
@@ -86,7 +87,7 @@ CREATE TABLE IF NOT EXISTS `posts` (
   `depth` int(10) unsigned NOT NULL DEFAULT '0',
   `pos` int(10) unsigned NOT NULL,
   `uid` int(10) unsigned NOT NULL
-) ENGINE=InnoDB AUTO_INCREMENT=9816 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=9820 DEFAULT CHARSET=latin1;
 
 --
 -- Dumping data for table `posts`
@@ -106,13 +107,26 @@ INSERT INTO `posts` (`id`, `p_pid`, `tid`, `content`, `create_time`, `edit_time`
 (9812, 9810, 17, 'epic', '2015-02-23 23:01:09', '2015-02-23 23:01:43', 1, 5, 3),
 (9813, 9811, 17, '???', '2015-02-23 23:01:14', '2015-02-23 23:01:14', 2, 3, 3),
 (9814, 9813, 17, 'veel', '2015-02-23 23:01:43', '2015-02-23 23:01:43', 3, 4, 3),
-(9815, 9810, 17, 'Kirjuta kommentaar siia', '2015-02-23 23:54:55', '2015-02-23 23:54:55', 1, 6, 8);
+(9815, 9810, 17, 'Kirjuta kommentaar siia', '2015-02-23 23:54:55', '2015-02-23 23:54:55', 1, 6, 8),
+(9816, 9806, 13, 'Kirjuta kommentaar siia', '2015-02-25 16:34:43', '2015-02-25 16:34:43', 2, 7, 8),
+(9817, NULL, 19, 'The sisu', '2015-02-25 16:38:02', '2015-02-25 16:38:02', 0, 1, 8),
+(9818, 9816, 13, 'Kirjuta kommentaar siia', '2015-02-25 16:44:29', '2015-02-25 16:44:29', 3, 8, 8),
+(9819, NULL, 20, 'The sisu', '2015-02-25 16:44:44', '2015-02-25 16:44:44', 0, 1, 8);
 
 --
 -- Triggers `posts`
 --
 DELIMITER //
-CREATE TRIGGER `tr_post_before_insert_rules` BEFORE INSERT ON `posts`
+CREATE TRIGGER `tr_inc_topic_and_forum_post_count` AFTER INSERT ON `posts`
+ FOR EACH ROW begin
+	update topics set post_count = post_count + 1 where id = NEW.tid;
+    update forums set post_count = post_count + 1 where id = (select fid from topics where id = NEW.tid);
+    
+end
+//
+DELIMITER ;
+DELIMITER //
+CREATE TRIGGER `tr_set_depth_from_parent_post` BEFORE INSERT ON `posts`
  FOR EACH ROW BEGIN
     IF NEW.p_pid IS NOT NULL THEN
         SET NEW.depth = 1+(SELECT depth from posts WHERE id=NEW.p_pid);
@@ -134,18 +148,33 @@ CREATE TABLE IF NOT EXISTS `topics` (
   `content` text NOT NULL,
   `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `edit_time` timestamp NULL DEFAULT '0000-00-00 00:00:00' ON UPDATE CURRENT_TIMESTAMP,
-  `uid` int(10) unsigned NOT NULL
-) ENGINE=InnoDB AUTO_INCREMENT=18 DEFAULT CHARSET=latin1;
+  `uid` int(10) unsigned NOT NULL,
+  `views` int(10) unsigned NOT NULL,
+  `post_count` int(10) unsigned NOT NULL
+) ENGINE=InnoDB AUTO_INCREMENT=21 DEFAULT CHARSET=latin1;
 
 --
 -- Dumping data for table `topics`
 --
 
-INSERT INTO `topics` (`id`, `fid`, `name`, `content`, `create_time`, `edit_time`, `uid`) VALUES
-(13, 10, 'Olulised uudised', '', '2015-02-22 14:27:14', '0000-00-00 00:00:00', 8),
-(14, 10, 'Pealkiri', '', '2015-02-23 18:11:17', '0000-00-00 00:00:00', 8),
-(15, 10, 'Pealkiri 2', '', '2015-02-23 18:11:23', '0000-00-00 00:00:00', 8),
-(17, 20, 'Väga oluline: help!', '', '2015-02-23 22:55:34', '0000-00-00 00:00:00', 8);
+INSERT INTO `topics` (`id`, `fid`, `name`, `content`, `create_time`, `edit_time`, `uid`, `views`, `post_count`) VALUES
+(13, 10, 'Olulised uudised', '', '2015-02-22 14:27:14', '2015-02-25 17:47:47', 8, 32, 8),
+(14, 10, 'Pealkiri', '', '2015-02-23 18:11:17', '2015-02-25 17:30:31', 8, 14, 1),
+(15, 10, 'Pealkiri 2', '', '2015-02-23 18:11:23', '2015-02-25 17:48:23', 8, 9, 1),
+(17, 20, 'Väga oluline: help!', '', '2015-02-23 22:55:34', '2015-02-25 17:47:12', 8, 4, 6),
+(19, 10, 'Pealkiri new', '', '2015-02-25 16:38:02', '2015-02-25 17:33:08', 8, 10, 1),
+(20, 10, 'Pealkirifdsafs', '', '2015-02-25 16:44:44', '2015-02-25 16:44:44', 8, 0, 1);
+
+--
+-- Triggers `topics`
+--
+DELIMITER //
+CREATE TRIGGER `tr_inc_forum_topic_count` AFTER INSERT ON `topics`
+ FOR EACH ROW begin
+	update forums set topic_count = topic_count + 1 where id = NEW.fid;
+end
+//
+DELIMITER ;
 
 -- --------------------------------------------------------
 
@@ -181,7 +210,7 @@ CREATE TABLE IF NOT EXISTS `users` (
   `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `edit_time` timestamp NULL DEFAULT '0000-00-00 00:00:00' ON UPDATE CURRENT_TIMESTAMP,
   `usergroup` int(10) unsigned NOT NULL DEFAULT '1'
-) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=23 DEFAULT CHARSET=latin1;
 
 --
 -- Dumping data for table `users`
@@ -191,7 +220,15 @@ INSERT INTO `users` (`id`, `name`, `pass`, `email`, `create_time`, `edit_time`, 
 (3, 'user1', 'f0578f1e7174b1a41c4ea8c6e17f7a8a3b88c92a', 'email@meh.com', '2015-02-23 15:08:09', '2015-02-24 11:19:19', 1),
 (4, 'user', '9d4e1e23bd5b727046a9e3b4b7db57bd8d6ee684', 'Email', '2015-02-23 15:20:32', '2015-02-24 11:19:20', 1),
 (7, 'Kasutajanimi2', '354b7d6a59251940bd3f6b49e029f2d043cc6e77', 'Email', '2015-02-23 15:23:25', '2015-02-24 11:19:22', 1),
-(8, 'Kasutajanimi', '354b7d6a59251940bd3f6b49e029f2d043cc6e77', 'Email', '2015-02-23 17:55:31', '2015-02-24 11:19:23', 2);
+(8, 'Kasutajanimi', '354b7d6a59251940bd3f6b49e029f2d043cc6e77', 'Email', '2015-02-23 17:55:31', '2015-02-24 11:19:23', 2),
+(9, 'Kasutajanimisadasd', '354b7d6a59251940bd3f6b49e029f2d043cc6e77', 'Email', '2015-02-25 19:26:50', '0000-00-00 00:00:00', 1),
+(10, 'Kasutajanimisfddsfsd', '354b7d6a59251940bd3f6b49e029f2d043cc6e77', 'Email', '2015-02-25 19:30:14', '0000-00-00 00:00:00', 1),
+(11, 'Kasutajanimidsafafdsfsfd', '354b7d6a59251940bd3f6b49e029f2d043cc6e77', 'Email', '2015-02-25 19:30:20', '0000-00-00 00:00:00', 1),
+(12, 'Kasutajanimifdsaff', '354b7d6a59251940bd3f6b49e029f2d043cc6e77', 'Email', '2015-02-25 19:30:49', '0000-00-00 00:00:00', 1),
+(15, 'Kasutajanimidfsfasfddasf', '354b7d6a59251940bd3f6b49e029f2d043cc6e77', 'Email', '2015-02-25 19:46:26', '0000-00-00 00:00:00', 1),
+(16, 'Kasutajanimidfsfs', '354b7d6a59251940bd3f6b49e029f2d043cc6e77', 'Email', '2015-02-25 19:50:20', '0000-00-00 00:00:00', 1),
+(18, 'Kasutajanimifdsafadfas', '354b7d6a59251940bd3f6b49e029f2d043cc6e77', 'Emailf', '2015-02-25 19:54:14', '0000-00-00 00:00:00', 1),
+(19, 'Kasutajanimifdsfasd', '354b7d6a59251940bd3f6b49e029f2d043cc6e77', 'Email', '2015-02-25 19:55:00', '0000-00-00 00:00:00', 1);
 
 --
 -- Indexes for dumped tables
@@ -231,7 +268,7 @@ ALTER TABLE `usergroups`
 -- Indexes for table `users`
 --
 ALTER TABLE `users`
- ADD PRIMARY KEY (`id`), ADD UNIQUE KEY `user` (`name`,`email`), ADD KEY `usergroup` (`usergroup`);
+ ADD PRIMARY KEY (`id`), ADD UNIQUE KEY `unique_name` (`name`), ADD KEY `usergroup` (`usergroup`);
 
 --
 -- AUTO_INCREMENT for dumped tables
@@ -241,17 +278,17 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT for table `forums`
 --
 ALTER TABLE `forums`
-MODIFY `id` int(10) unsigned NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=24;
+MODIFY `id` int(10) unsigned NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=23;
 --
 -- AUTO_INCREMENT for table `posts`
 --
 ALTER TABLE `posts`
-MODIFY `id` int(10) unsigned NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=9816;
+MODIFY `id` int(10) unsigned NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=9820;
 --
 -- AUTO_INCREMENT for table `topics`
 --
 ALTER TABLE `topics`
-MODIFY `id` int(10) unsigned NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=18;
+MODIFY `id` int(10) unsigned NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=21;
 --
 -- AUTO_INCREMENT for table `usergroups`
 --
@@ -261,7 +298,7 @@ MODIFY `id` int(10) unsigned NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=3;
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-MODIFY `id` int(10) unsigned NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=9;
+MODIFY `id` int(10) unsigned NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=23;
 --
 -- Constraints for dumped tables
 --

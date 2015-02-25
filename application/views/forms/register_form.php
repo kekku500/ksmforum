@@ -1,13 +1,15 @@
-<a href="<?php echo base_url(); ?>">Kodu</a>
 <?php 
-echo validation_errors();
+if($this->input->post('form') == 'register')
+    echo validation_errors();
 
 ?>
 <div style="border:5px solid; display:inline-block;">    
 <?php
-$segments = array('register');
-echo form_open(site_url($segments)); 
+//$segments = array('main', 'register');
+echo form_open(current_url()); 
 ?>
+    
+<input type="hidden" name="form" value="register" />
 
 <input type="text" name="user" value="Kasutajanimi" size="50" /><br>
 

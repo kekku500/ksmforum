@@ -1,10 +1,12 @@
 <p>Lisa uus teema: <?php echo $row_item['name']; ?></p>
 
-<?php echo validation_errors(); ?>
+<?php 
+if($this->input->post('form') == 'addtopic')
+    echo validation_errors(); ?>
 
 <?php 
 
-$segments = array('browser', 'addtopic', $row_item['id']);
+$segments = array('main', 'addtopic', $row_item['id']);
 
 echo form_open(site_url($segments)); ?>
 

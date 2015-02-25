@@ -1,6 +1,8 @@
 <p><?php echo $title ?></p>
 
-<?php echo validation_errors(); ?>
+<?php 
+if($this->input->post('form') == 'addpost')
+    echo validation_errors(); ?>
 
 <?php 
 

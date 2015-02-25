@@ -78,15 +78,15 @@ class Post_model extends CI_Model {
         $this->db->order_by("pos", "asc");
         $this->db->join('users', 'users.id = '.$this->table.'.uid');
         $this->db->select(
-                'posts.id as posts_id,
+                'posts.id as post_id,
                 p_pid,
                 tid,
                 content,
-                posts.create_time as posts_create_time,
-                posts.edit_time as posts_edit_time,
+                posts.create_time as post_create_time,
+                posts.edit_time as post_edit_time,
                 depth,
                 pos,
-                users.id as users_id,
+                users.id as user_id,
                 name,
                 usergroup');
         
@@ -104,15 +104,15 @@ class Post_model extends CI_Model {
         $this->db->order_by("pos", "asc");
         $this->db->join('users', 'users.id = '.$this->table.'.uid');
         $this->db->select(
-                'posts.id as posts_id,
+                'posts.id as post_id,
                 p_pid,
                 tid,
                 content,
-                posts.create_time as posts_create_time,
-                posts.edit_time as posts_edit_time,
+                posts.create_time as post_create_time,
+                posts.edit_time as post_edit_time,
                 depth,
                 pos,
-                users.id as users_id,
+                users.id as user_id,
                 name,
                 usergroup');
         

@@ -1,5 +1,6 @@
 <?php 
-echo validation_errors();
+if($this->input->post('form') == 'login')
+    echo validation_errors();
 
 ?>
 <div style="border:5px solid; display:inline-block;">    

@@ -7,26 +7,25 @@ class Main extends CI_Controller {
         
         $this->load->library('template');
         $this->load->model(array('topic_model', 'post_model', 'forum_model', 'user_model', 'usergroup_model'));
-        $this->load->helper('url'); 
+        $this->load->helper(array('url','date')); 
         
         $this->check_login(); 
         
         $this->user_controls();
+        
+        $this->lang->load('forum');
     }
     
-    private function user_controls(){
-        if($this->auth->isLoggedIn())
-            $userinfo['user'] = $this->user_model->getUser($this->auth->getUserId());
-        $this->template->prebody('auth_header', (isset($userinfo) ? $userinfo : array()));
-        if(!$this->auth->isLoggedIn())
-            $this->template->prebody('forms/login_form');  
+    //pealeht
+    public function index(){   
+        $this->template->setTitle($this->lang->line('index_website_title'));
+        
+        $this->navigator();
+        
+        $this->rootforums();
     }
     
-    private function end(){
-        $this->template->load('default', array('title' => "Näide")); 
-    }
-    
-    //kutsu veel end() lõpus
+    //peale ükskõik, mis meetodit, kutstu veel end()
     public function _remap($method, $params = array()){
         if (method_exists($this, $method)){
             $ret = call_user_func_array(array($this, $method), $params);
@@ -36,15 +35,33 @@ class Main extends CI_Controller {
         show_404();
     }
     
+    //kutsutakse kõige lõpus
+    private function end(){
+        $this->template->load('default'); 
+    }
+    
+    //nupud sisselogimiseks ja registreerimieks
+    private function user_controls(){
+        if($this->auth->isLoggedIn())
+            $userinfo['user'] = $this->user_model->getUser($this->auth->getUserId());
+        $this->template->prebody('auth_header', (isset($userinfo) ? $userinfo : array()));
+        if(!$this->auth->isLoggedIn()){
+            $this->template->prebody('forms/login_form');  
+            $this->register();
+        }
+    }
+    
+    //kontrollib, kas kasutaja logitud. Kui mitte, siis lihtsalte
+    //sisselogimise katse kontroll
     private function check_login(){  
         if($this->auth->isLoggedIn()){
             return;
         }
-        
-        $this->load->helper('form');   
-        $this->load->library('form_validation');
-        
+
         if($this->input->post('form') == 'login'){
+            $this->load->helper('form');   
+            $this->load->library('form_validation');
+            
             $this->form_validation->set_rules('user', 'Kasutajanimi', 'required');
             $this->form_validation->set_rules('pass', 'Salasõna', 'required');
         
@@ -64,13 +81,16 @@ class Main extends CI_Controller {
     }
     
 
-    
+    //logib välja
     public function logout($url){
         $this->auth->logout();
         
         redirect(base64_decode($url));
     }
     
+    //foorumis navigeerimiseks
+    //fid - foorum, kus hetkel ollakse
+    //extra - saab navigaatorit pikendada (näiteks lisa postitus)
     private function navigator($fid = null, $extra = null){
         $path = array();
         
@@ -95,16 +115,7 @@ class Main extends CI_Controller {
         $this->template->body('navigator', $data);
     }
     
-    public function index(){     
-        $this->navigator();
-        
-        $this->rootforums();
-        
-        
-    }
-    
-
-    
+    //foorumid, millel pole vanemaid
     private function rootforums(){
         $rootforums = $this->forum_model->getRootForums();
         foreach($rootforums as $row){
@@ -113,7 +124,9 @@ class Main extends CI_Controller {
             $forums = $this->forum_model->getForumsByParent($row['id']);
             
             if(count($forums) > 0){
-                $this->template->body('table/header', $data);
+                $data['header']['name'] = $row['name'];
+                $data['header']['topic_count'] = 'Teemasid';
+                $this->template->body('forum/header', $data);
                 
                 foreach ($forums as $subrow){ 
                     $data['row'] = $subrow;
@@ -121,25 +134,26 @@ class Main extends CI_Controller {
                     $segments = array('main', 'forum', $subrow['id']);
                     $data['row']['site_url'] = site_url($segments);
 
-                    $this->template->body('table/row', $data);
+                    $this->template->body('forum/row', $data);
                 }  
                 $data['row'] = $row;
-                $this->template->body('table/footer', $data);
+                $this->template->body('forum/footer', $data);
             }
         }
     }
     
+    //foorumi vaade
     public function forum($fid){
         $forum = $this->forum_model->getForum($fid);
         $data['fid'] = $fid;
         
-
+        $this->template->setTitle(sprintf($this->lang->line('forum_website_title'), $forum['name']));
         
         $this->navigator($fid);
         
         //alamfoorumid
-        $data['row']['name'] = $forum['name']." alamfoorumid";
-        $this->template->body('table/header', $data);
+        $data['header']['name'] = $forum['name'];
+        $this->template->body('subforum/header', $data);
         
         $subforums = $this->forum_model->getForumsByParent($fid);
 
@@ -149,19 +163,19 @@ class Main extends CI_Controller {
             $segments = array('main', 'forum', $row['id']);
             $data['row']['site_url'] = site_url($segments);
             
-            $this->template->body('table/row', $data);
+            $this->template->body('forum/row', $data);
         }  
 
         $data['row'] = $forum;
-        $this->template->body('table/footer', $data);
+        $this->template->body('forum/footer', $data);
         
         if($this->auth->isLoggedIn())
             $this->template->body('addtopic_anchor', $data);
         
         if($forum['p_fid'] != null){
             //teemad
-            $data['row']['name'] = $forum['name']." teemad";
-            $this->template->body('table/header', $data);
+            $data['row']['name'] = $forum['name'];
+            $this->template->body('topic/table/header', $data);
             
             
             $teemad = $this->topic_model->getTopics($fid);
@@ -173,16 +187,36 @@ class Main extends CI_Controller {
 
                 $data['row'] = $row;
 
-                $this->template->body('table/row', $data);
+                $this->template->body('topic/table/row', $data);
             }  
 
             $data['row'] = $forum;
-            $this->template->body('table/footer', $data);
+            $this->template->body('topic/table/footer', $data);
         }
 
     }
     
+    //kontrollib, kas teemat on vaadatud, kui ei, siis suurendab andmebaasis view count-i
+    private function viewed_topic($tid){
+        //print_r($this->session->userdata['t']);
+        //$this->session->unset_userdata('t');
+        if(!$this->session->userdata('t'))
+            $this->session->set_userdata('t', array());
+
+        if(!in_array($tid, $this->session->userdata('t'))){
+            $this->topic_model->editTopicSet($tid, array(
+                'views' => 'views+1'
+                ));
+
+            $t = $this->session->userdata('t');
+            $t[] = $tid;
+            $this->session->set_userdata('t', $t);
+        }
+    }
+    
+    //teema vaade, comments n shit
     public function topic($tid){
+        $this->viewed_topic($tid);
         $this->load->model('user_model');        
         
         $topic = $this->topic_model->getTopic($tid);
@@ -208,7 +242,7 @@ class Main extends CI_Controller {
 
     }
     
- 
+    //teema lisamise vaade
     public function addtopic($fid){
         $this->navigator($fid, 
                     array(
@@ -253,6 +287,7 @@ class Main extends CI_Controller {
 
     }
     
+    //postituse lisamise vaade
     public function addpost($tid, $pid){
         $this->load->helper('form');
 	$this->load->library('form_validation');
@@ -292,6 +327,8 @@ class Main extends CI_Controller {
 
     }
     
+    
+    //postituse muutmise vaade
     public function editpost($tid, $pid){
         $this->load->helper('form');
 	$this->load->library('form_validation');
@@ -340,7 +377,58 @@ class Main extends CI_Controller {
 
     }
     
-    
+    //registreerimise aken
+    private function register(){
+        $this->load->helper(array('form', 'url'));
+        $this->load->library('form_validation');
 
+        if($this->input->post('form') == 'register'){
+            if($this->session->userdata('register_limit')){
+                $register_second = $this->session->userdata('register_limit');
+                $time_since_register = now() - $register_second;
+                $wait_time = 0;
+                if($time_since_register < $wait_time){
+                    echo 'Oota '.($wait_time - $time_since_register).' sekundit enne uuesti registreerimist.';
+                    return;
+                }else{
+                    $this->session->unset_userdata('register_limit');
+                }
+            }
+            
+            $this->form_validation->set_rules('user', 'Kasutajanimi', 'required');
+            $this->form_validation->set_rules('email', 'Email', 'required');
+            $this->form_validation->set_rules('pass', 'Salasõna', 'required');
+            $this->form_validation->set_rules('passconf', 'Salasõna kontroll', 'required');
+
+            if($this->form_validation->run() == FALSE){ 
+            }else{  
+                $this->load->model('user_model');
+                $this->load->library('auth');
+                $user = $this->input->post('user');
+                $email = $this->input->post('email');
+                $pass = $this->input->post('pass');
+
+                $userdata = array(
+                    'name' => $user,
+                    'email' => $email,
+                    'pass' => $pass
+                );
+                $this->user_model->adduser($userdata);
+
+                $userid = $this->user_model->attemptLogin($user, $pass);
+
+                if(!$userid){
+                  echo 'wtf';
+                }else{
+                  $this->session->set_userdata('register_limit', now());
+
+                  $this->auth->login($userid);
+                  redirect(base_url());
+                }
+
+            }  
+        }
+        $this->template->prebody('forms/register_form');
+    }
     
 }
