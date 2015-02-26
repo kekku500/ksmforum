@@ -1,7 +1,7 @@
 <?php  if (!defined('BASEPATH')) exit('No direct script access allowed');
 
-//Ümbris controllerile
-class Template extends CI_Loader{
+
+class Template{
     
     private $ci;
     

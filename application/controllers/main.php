@@ -5,7 +5,7 @@ class Main extends CI_Controller {
     public function __construct() {
         parent::__construct();
         
-        $this->load->library(array('template', 'multiform', 'form_validation'));
+        $this->load->library(array('template', 'multiform', 'form_validation', 'forumbase'));
         $this->load->model(array('topic_model', 'post_model', 'forum_model', 'user_model', 'usergroup_model'));
         $this->load->helper(array('url','date', 'form')); 
         
