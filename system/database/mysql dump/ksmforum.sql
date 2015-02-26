@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: 127.0.0.1
--- Generation Time: Feb 25, 2015 at 09:50 PM
+-- Generation Time: Feb 26, 2015 at 10:59 AM
 -- Server version: 5.6.21
 -- PHP Version: 5.6.3
 
@@ -39,7 +39,7 @@ CREATE TABLE IF NOT EXISTS `ci_sessions` (
 --
 
 INSERT INTO `ci_sessions` (`session_id`, `ip_address`, `user_agent`, `last_activity`, `user_data`) VALUES
-('81c0c0374a85175d1eacaa1d2816baac', '::1', 'Mozilla/5.0 (Windows NT 6.2; WOW64; rv:35.0) Gecko/20100101 Firefox/35.0', 1424897388, 'a:7:{s:9:"user_data";s:0:"";s:13:"viewed_topics";s:3:"t13";s:3:"t13";i:1;s:3:"t14";i:1;s:1:"r";s:2:"20";s:1:"t";a:3:{i:0;s:2:"17";i:1;s:2:"13";i:2;s:2:"15";}s:7:"user_id";s:1:"8";}');
+('1b795c9466edb2a32d480660250f196a', '::1', 'Mozilla/5.0 (Windows NT 6.2; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/40.0.2214.115 Safari/537.36', 1424943297, 'a:2:{s:9:"user_data";s:0:"";s:1:"t";a:2:{i:0;s:2:"14";i:1;s:2:"13";}}');
 
 -- --------------------------------------------------------
 
@@ -61,13 +61,13 @@ CREATE TABLE IF NOT EXISTS `forums` (
 --
 
 INSERT INTO `forums` (`id`, `p_fid`, `name`, `uid`, `topic_count`, `post_count`) VALUES
-(10, 14, 'Uudised', 8, 2, 2),
+(10, 14, 'Uudised', 8, 5, 13),
 (14, NULL, 'Pealehe foorum', 8, 0, 0),
 (15, NULL, 'KSM Foorum', 8, 0, 0),
 (16, NULL, 'Muu', 8, 0, 0),
 (17, 10, 'Uudiste sub', 8, 0, 0),
 (19, NULL, 'Täiesti uus foorum', 8, 0, 0),
-(20, 10, 'Yipee', 8, 0, 0),
+(20, 10, 'Yipee', 8, 1, 6),
 (21, 19, 'Alam', 8, 0, 0),
 (22, 21, 'Epic shizz', 8, 0, 0);
 
@@ -87,14 +87,14 @@ CREATE TABLE IF NOT EXISTS `posts` (
   `depth` int(10) unsigned NOT NULL DEFAULT '0',
   `pos` int(10) unsigned NOT NULL,
   `uid` int(10) unsigned NOT NULL
-) ENGINE=InnoDB AUTO_INCREMENT=9820 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=9821 DEFAULT CHARSET=latin1;
 
 --
 -- Dumping data for table `posts`
 --
 
 INSERT INTO `posts` (`id`, `p_pid`, `tid`, `content`, `create_time`, `edit_time`, `depth`, `pos`, `uid`) VALUES
-(9802, NULL, 13, 'The sisu', '2015-02-22 14:27:14', '2015-02-22 14:27:14', 0, 1, 8),
+(9802, NULL, 13, 'The sisu 2', '2015-02-22 14:27:14', '2015-02-26 08:59:27', 0, 1, 8),
 (9803, 9802, 13, 'Kirjuta kommentaar siia', '2015-02-22 17:42:11', '2015-02-22 17:42:11', 1, 2, 8),
 (9804, 9802, 13, 'Yep', '2015-02-23 14:41:10', '2015-02-23 14:41:10', 1, 3, 8),
 (9805, 9802, 13, 'Kirjuta kommentaar siia', '2015-02-23 16:26:42', '2015-02-23 16:26:43', 1, 4, 8),
@@ -111,11 +111,21 @@ INSERT INTO `posts` (`id`, `p_pid`, `tid`, `content`, `create_time`, `edit_time`
 (9816, 9806, 13, 'Kirjuta kommentaar siia', '2015-02-25 16:34:43', '2015-02-25 16:34:43', 2, 7, 8),
 (9817, NULL, 19, 'The sisu', '2015-02-25 16:38:02', '2015-02-25 16:38:02', 0, 1, 8),
 (9818, 9816, 13, 'Kirjuta kommentaar siia', '2015-02-25 16:44:29', '2015-02-25 16:44:29', 3, 8, 8),
-(9819, NULL, 20, 'The sisu', '2015-02-25 16:44:44', '2015-02-25 16:44:44', 0, 1, 8);
+(9819, NULL, 20, 'The sisu', '2015-02-25 16:44:44', '2015-02-25 16:44:44', 0, 1, 8),
+(9820, 9802, 13, 'Kirjuta kommentaar siia', '2015-02-26 08:58:59', '2015-02-26 08:58:59', 1, 9, 8);
 
 --
 -- Triggers `posts`
 --
+DELIMITER //
+CREATE TRIGGER `tr_dec_topic_and_forum_post_count` BEFORE DELETE ON `posts`
+ FOR EACH ROW begin
+	update topics set post_count = post_count - 1 where id = OLD.tid;
+    update forums set post_count = post_count - 1 where id = (select fid from topics where id = OLD.tid);
+    
+end
+//
+DELIMITER ;
 DELIMITER //
 CREATE TRIGGER `tr_inc_topic_and_forum_post_count` AFTER INSERT ON `posts`
  FOR EACH ROW begin
@@ -158,8 +168,8 @@ CREATE TABLE IF NOT EXISTS `topics` (
 --
 
 INSERT INTO `topics` (`id`, `fid`, `name`, `content`, `create_time`, `edit_time`, `uid`, `views`, `post_count`) VALUES
-(13, 10, 'Olulised uudised', '', '2015-02-22 14:27:14', '2015-02-25 17:47:47', 8, 32, 8),
-(14, 10, 'Pealkiri', '', '2015-02-23 18:11:17', '2015-02-25 17:30:31', 8, 14, 1),
+(13, 10, 'Olulised uudised', '', '2015-02-22 14:27:14', '2015-02-26 08:58:59', 8, 33, 9),
+(14, 10, 'Pealkiri', '', '2015-02-23 18:11:17', '2015-02-26 08:20:57', 8, 15, 1),
 (15, 10, 'Pealkiri 2', '', '2015-02-23 18:11:23', '2015-02-25 17:48:23', 8, 9, 1),
 (17, 20, 'Väga oluline: help!', '', '2015-02-23 22:55:34', '2015-02-25 17:47:12', 8, 4, 6),
 (19, 10, 'Pealkiri new', '', '2015-02-25 16:38:02', '2015-02-25 17:33:08', 8, 10, 1),
@@ -168,6 +178,13 @@ INSERT INTO `topics` (`id`, `fid`, `name`, `content`, `create_time`, `edit_time`
 --
 -- Triggers `topics`
 --
+DELIMITER //
+CREATE TRIGGER `tr_dec_forum_topic_count` BEFORE DELETE ON `topics`
+ FOR EACH ROW begin
+	update forums set topic_count = topic_count - 1 where id = OLD.fid;
+end
+//
+DELIMITER ;
 DELIMITER //
 CREATE TRIGGER `tr_inc_forum_topic_count` AFTER INSERT ON `topics`
  FOR EACH ROW begin
@@ -210,7 +227,7 @@ CREATE TABLE IF NOT EXISTS `users` (
   `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `edit_time` timestamp NULL DEFAULT '0000-00-00 00:00:00' ON UPDATE CURRENT_TIMESTAMP,
   `usergroup` int(10) unsigned NOT NULL DEFAULT '1'
-) ENGINE=InnoDB AUTO_INCREMENT=23 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=20 DEFAULT CHARSET=latin1;
 
 --
 -- Dumping data for table `users`
@@ -283,7 +300,7 @@ MODIFY `id` int(10) unsigned NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=23;
 -- AUTO_INCREMENT for table `posts`
 --
 ALTER TABLE `posts`
-MODIFY `id` int(10) unsigned NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=9820;
+MODIFY `id` int(10) unsigned NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=9821;
 --
 -- AUTO_INCREMENT for table `topics`
 --
@@ -298,7 +315,7 @@ MODIFY `id` int(10) unsigned NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=3;
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-MODIFY `id` int(10) unsigned NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=23;
+MODIFY `id` int(10) unsigned NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=20;
 --
 -- Constraints for dumped tables
 --

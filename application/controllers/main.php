@@ -5,15 +5,16 @@ class Main extends CI_Controller {
     public function __construct() {
         parent::__construct();
         
-        $this->load->library('template');
+        $this->load->library(array('template', 'multiform', 'form_validation'));
         $this->load->model(array('topic_model', 'post_model', 'forum_model', 'user_model', 'usergroup_model'));
-        $this->load->helper(array('url','date')); 
+        $this->load->helper(array('url','date', 'form')); 
         
         $this->check_login(); 
         
         $this->user_controls();
         
         $this->lang->load('forum');
+        
     }
     
     //pealeht
@@ -58,10 +59,7 @@ class Main extends CI_Controller {
             return;
         }
 
-        if($this->input->post('form') == 'login'){
-            $this->load->helper('form');   
-            $this->load->library('form_validation');
-            
+        if($this->multiform->is_form('login')){
             $this->form_validation->set_rules('user', 'Kasutajanimi', 'required');
             $this->form_validation->set_rules('pass', 'Salasõna', 'required');
         
@@ -169,8 +167,8 @@ class Main extends CI_Controller {
         $data['row'] = $forum;
         $this->template->body('forum/footer', $data);
         
-        if($this->auth->isLoggedIn())
-            $this->template->body('addtopic_anchor', $data);
+        //if($this->auth->isLoggedIn())
+            //$this->template->body('addtopic_anchor', $data);
         
         if($forum['p_fid'] != null){
             //teemad
@@ -289,10 +287,9 @@ class Main extends CI_Controller {
     
     //postituse lisamise vaade
     public function addpost($tid, $pid){
-        $this->load->helper('form');
-	$this->load->library('form_validation');
-        
         $topic = $this->topic_model->getTopic($tid);
+        
+        //nav
         $segments = array('main', 'topic', $topic['id']);
         $this->navigator($topic['fid'], 
             array(
@@ -300,10 +297,9 @@ class Main extends CI_Controller {
                 array('Lisa kommentaar', current_url())
             ));
 
+        //form
         if($this->auth->isLoggedIn()){ 
-            
-            if($this->input->post('form') == 'addpost'){
-
+            if($this->multiform->is_form('addpost')){
                 $this->form_validation->set_rules('content', 'Sisu', 'required');
                 
                 if($this->form_validation->run()){
@@ -313,16 +309,20 @@ class Main extends CI_Controller {
                     redirect(site_url($segments));
                 } 
             }
+            //show to post you are replying to
             $data['row_item'] =  $this->post_model->getPostJoinUser($pid);
             $data['row_item']['depth'] = 0;
             $this->template->body('topic/topic_content', $data);
-            $data['title'] = 'Lisa uus kommentaar';
+            
+            //language
+            $data['title'] = $this->lang->line('addpost_title');
+            $data['submit'] = $this->lang->line('addpost_button');
+            $data['content'] = $this->lang->line('addpost_content');
+            
             $data['callback'] = 'addpost';
-            $data['submit'] = 'Lisa';
-            $data['content'] = 'Kirjuta kommentaar siia';
-            $this->template->body('forms/addpost_form', $data);  
+            $this->template->body('forms/post_form', $data);  
         }else{
-            echo 'logi sisse neeger';
+            $this->template->body('errors/no_permission');
         }
 
     }
@@ -330,27 +330,28 @@ class Main extends CI_Controller {
     
     //postituse muutmise vaade
     public function editpost($tid, $pid){
-        $this->load->helper('form');
-	$this->load->library('form_validation');
-        
         $topic = $this->topic_model->getTopic($tid);
+        
+        //nav
         $segments = array('main', 'topic', $topic['id']);
         $this->navigator($topic['fid'], 
             array(
                 array($topic['name'], site_url($segments)),
                 array('Muuda kommentaari', current_url())
             ));
-
+        
+        //edit post form
         if($this->auth->isLoggedIn()){     
-
             $post =  $this->post_model->getPostJoinUser($pid);
-            $uid = $post['users_id'];
+            $uid = $post['user_id'];
+            
+            //kas autor muudab postitust?
             if($this->auth->getUserId() == $uid){
                 if($this->input->post('form') == 'editpost'){
                     $this->form_validation->set_rules('content', 'Sisu', 'required');
-                    echo 'yeah';
+                    
+                    //postitame ja lähme teemasse tagasi
                     if($this->form_validation->run()){
-
                         $this->post_model->editPost($pid, $this->input->post('content'));
 
                         $segments = array('main', 'topic', $tid);
@@ -358,31 +359,34 @@ class Main extends CI_Controller {
                         redirect(site_url($segments));
                     } 
                 }
-
+                
+                //näita muudetavad postitust
                 $data['row_item'] = $post;
                 $data['row_item']['depth'] = 0;
                 $this->template->body('topic/topic_content', $data);
-                $data['title'] = 'Muuda kommentaari';
-                $data['callback'] = 'editpost';
-                $data['submit'] = 'Muuda';
+                
+                //lang
+                $data['title'] = $this->lang->line('editpost_title');
+                $data['submit'] = $this->lang->line('editpost_button');
+                
                 $data['content'] = $post['content'];
-                $this->template->body('forms/addpost_form', $data); 
+                $data['callback'] = 'editpost';
+                $this->template->body('forms/post_form', $data); 
             }else{
-                echo 'vot ei muuda';
+                $this->template->body('errors/no_permission');
             }
  
         }else{
-            echo 'logi sisse neeger';
+            $this->template->body('errors/no_permission');
         }
 
     }
     
     //registreerimise aken
     private function register(){
-        $this->load->helper(array('form', 'url'));
-        $this->load->library('form_validation');
-
-        if($this->input->post('form') == 'register'){
+        if($this->multiform->is_form('register')){
+            
+            //register spam limit
             if($this->session->userdata('register_limit')){
                 $register_second = $this->session->userdata('register_limit');
                 $time_since_register = now() - $register_second;

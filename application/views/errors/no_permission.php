@@ -1,0 +1,1 @@
+<p style="color:red;"><?php echo $this->lang->line('error_no_permission'); ?></p>

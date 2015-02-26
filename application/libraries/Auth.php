@@ -4,6 +4,8 @@ class Auth{
     
     private $ci;
     
+    private $loggedout = false;
+    
     public function __construct() {
         $this->ci =& get_instance();
     }
@@ -14,12 +16,17 @@ class Auth{
       return true;
     }
     
+    function justLoggedOut(){
+        return $this->loggedout;
+    }
+    
     function login($userid){
         $this->ci->session->set_userdata('user_id', $userid);
     }
     
     function logout(){
         $this->ci->session->unset_userdata('user_id');
+        $this->loggedout = true;
     }
     
     function getUserId(){

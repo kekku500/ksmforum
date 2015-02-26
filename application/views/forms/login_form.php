@@ -1,26 +1,19 @@
 <?php 
-if($this->input->post('form') == 'login')
-    echo validation_errors();
-
+echo $this->multiform->validation_errors('login');
 ?>
 <div style="border:5px solid; display:inline-block;">    
-<?php
-echo form_open(current_url()); 
-?>
-    
-<input type="hidden" name="form" value="login" />
-    
-<input type="text" name="user" value="Kasutajanimi" size="50" /><br>
+    <?php
+    echo $this->multiform->form_open('login', current_url()); 
+    ?>
 
-<input type="text" name="pass" value="Salasõna" size="50" /><br>
+    <input type="text" name="user" value="<?php echo $this->lang->line('login_user')?>" size="25" /><br>
 
-<div>
-    <input type="submit" value="Logi sisse" />
-</p>
-        
-</div>
+    <input type="text" name="pass" value="<?php echo $this->lang->line('login_pass')?>" size="50" /><br>
 
-</form>
+        <div>
+            <input type="submit" value="<?php echo $this->lang->line('login_button')?>" />
+        </div>
+    </form>
 </div>
 
 
