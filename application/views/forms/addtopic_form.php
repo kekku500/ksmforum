@@ -1,25 +1,22 @@
-<p>Lisa uus teema: <?php echo $row_item['name']; ?></p>
+<p>
+<?php echo sprintf($this->lang->line('addtopic_header'), $row_item['name']);?>
+</p>
 
 <?php 
-if($this->input->post('form') == 'addtopic')
-    echo validation_errors(); ?>
+echo $this->multiform->validation_errors();
 
-<?php 
+echo $this->multiform->form_open(current_url());  ?>
 
-$segments = array('main', 'addtopic', $row_item['id']);
+    <?php echo $this->lang->line('addtopic_title'); ?><br>
+    <input type="text" name="title" value="<?php echo set_value('title'); ?>" size="50" /><br>
 
-echo form_open(site_url($segments)); ?>
+    <?php echo $this->lang->line('addtopic_content'); ?><br>
+    <?php echo form_textarea(array(
+        'name' => 'content',
+        'value' => set_value('content')
+    ));?>
 
-<input type="hidden" name="form" value="addtopic">
-
-<input type="text" name="title" value="Pealkiri" size="50" /><br>
-
-<?php echo form_textarea(array(
-    'name' => 'content',
-    'value' => 'The sisu'
-));?>
-
-<div><input type="submit" value="Lisa" /></div>
+    <div><input type="submit" value="<?php echo $this->lang->line('addtopic_button'); ?>" /></div>
 
 </form>
 

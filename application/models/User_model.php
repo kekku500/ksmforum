@@ -22,13 +22,15 @@ class User_model extends CI_Model {
     }
     
     public function attemptLoginGoogle($guid){
-        $result = $this->user_model->getUserByGoogle($guid);
+        $result = $this->user_model->getUserJoinGoogleUsers($guid);
         if(count($result) > 0) //account found
             return $result['user_id'];
         return false;
     }
     
     //peab sisse logitud olema
+    //Kontrollib, kas praeguse kasutaja parool on $pass.
+    //Kui andmebaasis on parool NULL, siis funktsioon tagastab null.
     public function checkPassword($pass){
         $this->db->select('pass');
         $query = $this->db->get_where($this->table, array('id' => $this->auth->getUserId()));
@@ -65,7 +67,7 @@ class User_model extends CI_Model {
     }
     
     
-    public function getUserByGoogle($guid){
+    public function getUserJoinGoogleUsers($guid){
         $this->db->join('googleusers', 'googleusers.uid = '.$this->table.'.id');
         $this->db->select(
                 'users.id as user_id,
@@ -90,9 +92,6 @@ class User_model extends CI_Model {
             'uid' => $this->db->insert_id()));
     }
     
-    public function addGooglePlusUser($userdata){
-        $this->db->insert($this->table, $data);
-    }
     
     public function editUser($data){
         

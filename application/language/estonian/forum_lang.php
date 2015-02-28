@@ -36,3 +36,20 @@ $lang['changepassword_button'] = 'Vaheta salasõna';
 $lang['changepassword_oldpassword'] = 'Vana salasõna';
 $lang['changepassword_newpassword'] = 'Uus salasõna';
 $lang['changepassword_newpassword_2'] = 'Uue salasõna kontroll';
+
+$lang['addforum_header'] = 'Loo foorumeid';
+$lang['addforum_parent'] = 'Vanem';
+$lang['addforum_name'] = 'Nimi';
+$lang['addforum_button'] = 'Loo foorum';
+$lang['addforum_success_msg'] = 'Foorum %s lisatud!';
+
+$lang['delforum_header'] = 'Kustuta foorumeid';
+$lang['delforum_choice'] = 'Valik';
+$lang['delforum_name'] = 'Nimi';
+$lang['delforum_button'] = 'Kustuta foorum';
+$lang['delforum_success_msg'] = 'Foorum %s kustutatud!';
+
+$lang['addtopic_header'] = 'Lisa uus teema foorumisse %s';
+$lang['addtopic_title'] = 'Pealkiri';
+$lang['addtopic_content'] = 'Sisu';
+$lang['addtopic_button'] = 'Lisa';

@@ -25,6 +25,15 @@ class Topic_model extends CI_Model {
         return $query->result_array();
     }
     
+    public function isUniqueTopicTitle($fid, $title){
+        $query = $this->db->get_where($this->table, array(
+                    'fid' => $fid,
+                    'name' => $title));
+        if($query->num_rows() == 0) //duplicate title
+            return true;
+        return false;
+    }
+    
     public function getTopic($tid){
         $query = $this->db->get_where($this->table, array('id' => $tid));
         return $query->row_array();

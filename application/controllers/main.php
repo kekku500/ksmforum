@@ -415,17 +415,8 @@ class Main extends CI_Controller {
                     ));
         
         if($this->auth->isLoggedIn()){
-            $this->load->helper('form');
-            $this->load->library('form_validation');
-            
             if($this->input->post('form') == 'addtopic'){
-                $this->form_validation->set_rules('content', 'Sisu', 'required');
-                $this->form_validation->set_rules('title', 'Pealkiri', 'required');
-
-                if($this->form_validation->run() == FALSE){
-                    $data['row_item'] =  $this->forum_model->getForum($fid);
-                    $this->template->body('forms/addtopic_form', $data);
-                }else{
+                if($this->form_validation->run('addtopic')){
                     $topicdata = array(
                         'fid' => $fid,
                         'name' => $this->input->post('title'),
@@ -437,19 +428,31 @@ class Main extends CI_Controller {
                     $tid = $this->db->insert_id();
 
                     $this->post_model->addPost($tid, 'null', $this->input->post('content'));
-
+                    
                     $segments = array('main', 'topic', $tid);
 
                     redirect(site_url($segments));
-                } 
-            }else{
-                $data['row_item'] =  $this->forum_model->getForum($fid);
-                $this->template->body('forms/addtopic_form', $data);  
+                }
             }
+            $data['row_item'] =  $this->forum_model->getForum($fid);
+            $this->multiform->setForm('addtopic');
+            $this->template->body('forms/addtopic_form', $data);  
         }else{
-            echo 'logi sesssse neegah';
+           $this->template->body('errors/no_permission');
         }
-
+    }
+    
+    public function addTopicCheck(){
+        if($this->form_validation->error_count() > 0)
+            return true; // 
+        
+        $fid = $this->uri->segment(3);
+        $title = $this->input->post('title');
+        
+        if($this->topic_model->isUniqueTopicTitle($fid, $title))
+                return true;
+        return false;
+        
     }
     
     //postituse lisamise vaade
@@ -551,57 +554,36 @@ class Main extends CI_Controller {
     }
     
     public function admin(){
-        /*$path = array();
-        
-        $segments = array('main');
-        $home_url = site_url($segments);
-        $path[] = array('Kodu', $home_url);
-        
-        $data['path'] = $path;
-        $this->template->body('navigator', $data);*/
         $this->navigator();
         
         if($this->auth->isLoggedIn()){
             
-            $this->load->model(array('user_model', 'usergroup_model'));
+            $this->load->model('usergroup_model');
             $usergroup = $this->usergroup_model->getActiveUserGroup();
 
             if($usergroup['addforum']){
-                $this->load->model('forum_model');
-
-                $this->load->helper('form');   
-                $this->load->library('form_validation');
                 if($this->input->post('form') == 'addforum'){
-                    $this->form_validation->set_rules('p_fid', 'Vanem', 'required');
-                    $this->form_validation->set_rules('name', 'Nimi', 'required');
-
-                    if($this->form_validation->run() == FALSE){
-                    }else{
+                    if($this->form_validation->run('addforum')){
                         $p_fid = $this->input->post('p_fid');
                         $data = array(
-                            'p_fid' => ($p_fid == 'null' ? null : $p_fid),
+                            'p_fid' => ($p_fid == 0 ? null : $p_fid),
                             'name' => $this->input->post('name'),
                             'uid' => $this->auth->getUserId()
                         );
                         $this->forum_model->addForum($data);
-                        echo 'Foorum '.$data['name'].' lisatud!<br>';
+                        $this->multiform->setSuccessMessage(sprintf(
+                                $this->lang->line('addforum_success_msg'), $data['name']));
                     } 
-                }else{
-
                 }
                 if($this->input->post('form') == 'delforum'){
-                    $this->form_validation->set_rules('fid', 'Foorum', 'required');
-
-                    if($this->form_validation->run() == FALSE){
-                    }else{
+                    if($this->form_validation->run('delforum')){
                         $fid = $this->input->post('fid');
                         $forum = $this->forum_model->getForum($fid);
                         
                         $this->forum_model->delForum($fid);
-                        echo 'Foorum '.$forum['name'].' kustutatud!<br>';
+                        $this->multiform->setSuccessMessage(sprintf(
+                                $this->lang->line('delforum_success_msg'), $forum['name']));
                     } 
-                }else{
-
                 }
 
                 $data['forums'] = $this->forum_model->getForums();
@@ -611,7 +593,7 @@ class Main extends CI_Controller {
                 $this->multiform->setForm('delforum');
                 $this->template->body('forms/delforum_form', $data); 
             }else{
-                echo 'Sul pole õigusi, et foorumeid lisada!';
+                $this->template->body('errors/no_permission'); 
             }
             
         }else{
