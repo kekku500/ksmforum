@@ -67,13 +67,6 @@ class Post_model extends CI_Model {
         return $res[0];
     }
     
-    public function getPosts($tid){
-        $this->db->order_by("pos", "asc");
-        $query = $this->db->get_where($this->table, array('tid' => $tid));
-                
-        return $query->result_array();
-    }
-    
     public function getPostsJoinUser($tid){
         $this->db->order_by("pos", "asc");
         $this->db->join('users', 'users.id = '.$this->table.'.uid');

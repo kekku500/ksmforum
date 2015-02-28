@@ -1,12 +1,9 @@
 <p>Loo foorumeid</p>
 <?php 
-if($this->input->post('form') == 'addforum')
-    echo validation_errors(); 
+echo $this->multiform->validation_errors();
 
-$segments = array('admin');
-echo form_open(site_url($segments)); ?>
+echo $this->multiform->form_open(current_url());  ?>
 
-<input type="hidden" name="form" value="addforum" />
 
 <input type="text" name="name" value="Nimi" size="50" /><br>
 

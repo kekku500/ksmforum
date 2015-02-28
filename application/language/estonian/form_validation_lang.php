@@ -17,12 +17,15 @@ $lang['is_numeric']			= "Väli %s võib sisaldada ainult komakohaga arve.";
 $lang['integer']			= "Väli %s võib sisaldada ainult numbreid.";
 $lang['regex_match']		= "Välja %s formaat ei ole õige.";
 $lang['matches']			= "Väli %s ei ole võrdne %s väljaga.";
-$lang['is_unique'] 			= "Väli %s peab sisaldama unikaalset väärtust.";
+$lang['is_unique'] 			= "Väli %s peab olema unikaalne.";
 $lang['is_natural']			= "Väli %s peab sisaldama ainult positiivseid arve.";
 $lang['is_natural_no_zero']	= "Väli %s peab olema nullist erinev positiivne arv.";
 $lang['decimal']			= "Väli %s peab sialdama komakohaga arvu.";
 $lang['less_than']			= "Väli %s peab olema väiksem kui %s.";
 $lang['greater_than']		= "Väli %s peab olema suurem kui %s.";
+
+//custom
+$lang['loginAttempt'] = "Vale kasutajanimi või parool.";
 
 
 /* End of file form_validation_lang.php */

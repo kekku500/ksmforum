@@ -11,7 +11,8 @@ class Template{
     private $scripts;
     private $body;
     
-    private $prebody_calls = array();
+    //private $prebody_calls = array();
+    private $prebody;
     private $postbody;
     
     private $loadvars = array(
@@ -19,8 +20,6 @@ class Template{
     
     function __construct() {
         $this->ci =& get_instance();
-
-        $this->addJS('assets/js/jquery-1.11.2.min.js');
     }
     
     function setTitle($title){
@@ -32,7 +31,8 @@ class Template{
     }
     
     function prebody($view, $vars = array()){
-        $this->prebody_calls[] = array($view, $vars);
+        //$this->prebody_calls[] = array($view, $vars);
+        $this->prebody .= $this->ci->load->view($view, $vars, true);
     }
     
    function postbody($view, $vars = array()){
@@ -47,8 +47,9 @@ class Template{
         
         $vars['body'] = '';
         
-        foreach($this->prebody_calls as $prebody)
-            $vars['body'] .= $this->ci->load->view($prebody[0], $prebody[1], true);
+        //foreach($this->prebody_calls as $prebody)
+        //    $vars['body'] .= $this->ci->load->view($prebody[0], $prebody[1], true);
+        $vars['body'] .= $this->prebody;
         $vars['body'] .= $this->body;
         $vars['body'] .= $this->postbody;
         

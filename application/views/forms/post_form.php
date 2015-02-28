@@ -1,12 +1,13 @@
 <p><?php echo $title ?></p>
 
 <?php 
-echo $this->multiform->validation_errors($callback); 
+echo $this->multiform->validation_errors(); 
 ?>
 
 <?php 
-$segments = array('main', $callback, $row_item['tid'], $row_item['post_id']);
-$this->multiform->form_open($callback, site_url($segments)); 
+//$segments = array('main', $this->multiform->getForm(), $row_item['tid'], $row_item['post_id']);
+//site_url($segments)
+echo $this->multiform->form_open(current_url()); 
 ?>
 
     <?php echo form_textarea(array(

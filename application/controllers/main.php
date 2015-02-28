@@ -2,28 +2,32 @@
 // Foorumis ringi liikumiseks
 class Main extends CI_Controller {
     
+    //meetod kutstutakse kõige alguses
     public function __construct() {
         parent::__construct();
-        
-        $this->load->library(array('template', 'multiform', 'form_validation', 'forumbase'));
+
+        $this->load->library(array('multiform', 'form_validation', 'googleoauth2'));
         $this->load->model(array('topic_model', 'post_model', 'forum_model', 'user_model', 'usergroup_model'));
         $this->load->helper(array('url','date', 'form')); 
+   
         
-        $this->check_login(); 
-        
-        $this->user_controls();
+        $segments = array('main', 'oauth2callback');
+        $this->googleoauth2->setCallbackUrlSegments($segments);
+   
+        $this->load->library('template', 'multiform');
         
         $this->lang->load('forum');
         
+        $this->template->addJS('assets/js/jquery-1.11.2.min.js');
+        
+        $this->check_login();
+        
+        $this->user_controls();
     }
     
-    //pealeht
-    public function index(){   
-        $this->template->setTitle($this->lang->line('index_website_title'));
-        
-        $this->navigator();
-        
-        $this->rootforums();
+    //kutsutakse kõige lõpus
+    private function end(){
+        $this->template->load('default'); 
     }
     
     //peale ükskõik, mis meetodit, kutstu veel end()
@@ -36,9 +40,48 @@ class Main extends CI_Controller {
         show_404();
     }
     
-    //kutsutakse kõige lõpus
-    private function end(){
-        $this->template->load('default'); 
+    //kontrollib, kas kasutaja logitud. Kui mitte, siis lihtsalte
+    //sisselogimise katse kontroll
+    private function check_login(){  
+        if($this->auth->isLoggedIn())
+            return;
+
+        if($this->multiform->is_form('login')){
+            $this->form_validation->run('login');
+            //loogika on funcktioonis loginAttempt()
+        }
+        
+        if($this->auth->isLoggedIn())
+            return;
+        
+        //GOOGLE OAUTH2
+        $redirectedFromGoogle = $this->input->get('oauth2');
+        if($this->multiform->is_form('logingoogle') || $redirectedFromGoogle){
+            $userinfo = $this->googleoauth2->getUserInfo();
+            $google_uid = $userinfo->id;
+            $this->session->set_userdata('google_email', $userinfo->email);
+
+            $userid = $this->user_model->attemptLoginGoogle($google_uid);
+
+            if($userid){ //account found
+                $this->auth->login($userid);
+                redirect(current_url());
+            }else{//account not found
+                
+            }
+        }
+        
+        //ka google logimine ebaõnnestus, näita vajalikke forme
+        if(!$this->auth->isLoggedIn()){
+            $formdata['valid_accesstoken'] = $this->googleoauth2->hasValidAccessToken();
+            $this->template->prebody('forms/login_form', $formdata); 
+            
+            if($formdata['valid_accesstoken'])
+                $this->registergoogle(); 
+            $this->register();
+
+        }
+        
     }
     
     //nupud sisselogimiseks ja registreerimieks
@@ -46,45 +89,81 @@ class Main extends CI_Controller {
         if($this->auth->isLoggedIn())
             $userinfo['user'] = $this->user_model->getUser($this->auth->getUserId());
         $this->template->prebody('auth_header', (isset($userinfo) ? $userinfo : array()));
-        if(!$this->auth->isLoggedIn()){
-            $this->template->prebody('forms/login_form');  
-            $this->register();
-        }
     }
     
-    //kontrollib, kas kasutaja logitud. Kui mitte, siis lihtsalte
-    //sisselogimise katse kontroll
-    private function check_login(){  
-        if($this->auth->isLoggedIn()){
-            return;
-        }
-
-        if($this->multiform->is_form('login')){
-            $this->form_validation->set_rules('user', 'Kasutajanimi', 'required');
-            $this->form_validation->set_rules('pass', 'Salasõna', 'required');
+    public function loginAttempt(){
+        if($this->form_validation->error_count() > 0)
+            return true; // kasutaja/parool valesti sisestatud, ära näita login failed errorit
         
-            if($this->form_validation->run() == FALSE){
-            }else{
-                $this->load->model('user_model');
-                $user = $this->input->post('user');
-                $pass = $this->input->post('pass');
+        $user = $this->input->post('user');
+        $pass = $this->input->post('pass');
 
-                $userid = $this->user_model->attemptLogin($user, $pass);
-
-                if($userid){
-                  $this->auth->login($userid);
-                }
-            }  
+        $userid = $this->user_model->attemptLogin($user, $pass);
+        if($userid){
+            $this->auth->login($userid);
+            return true;
         }
+        return false;
+    }
+
+
+    
+    public function oauth2callback($return_url_encoded = ''){
+        $this->googleoauth2->callback($return_url_encoded);
     }
     
-
-    //logib välja
+    public function reset(){
+        $this->googleoauth2->destroyAccessToken();
+    }
+    
     public function logout($url){
+        if($this->googleoauth2->hasAccessToken())
+            $this->googleoauth2->destroyAccessToken();
         $this->auth->logout();
-        
+
         redirect(base64_decode($url));
     }
+    
+    public function userpanel(){
+        $this->navigator();
+        
+        if(!$this->auth->isLoggedIn()){
+            redirect(base_url());
+            return;
+        }
+        
+        $passState = $this->user_model->checkPassword("huvitav, kas pass on null?");    
+        if($this->multiform->is_form('change_password')){
+            
+            if(isset($passState))
+                $this->form_validation->set_rules('oldpass', 'Vana salasõna', 'required');
+            $this->form_validation->set_rules('pass', 'Uus salasõna', 'required');
+            $this->form_validation->set_rules('passconf', 'Uue salasõna kontroll', 'required');
+
+            if($this->form_validation->run()){ 
+                $oldpass = $this->input->post('oldpass');
+                $pass = $this->input->post('pass');
+                
+                $passState = $this->user_model->checkPassword($oldpass);
+                echo 'state:'.$passState;
+                if(!isset($passState)){
+                    $this->user_model->changePassword($pass);
+                    $passState = 'pass oli tühi';
+                }else if($passState){  
+                    $this->user_model->changePassword($pass);
+                    echo 'salasõna vahetatud';
+                }else{
+                    echo 'vana pass vale';
+                }
+
+            }  
+        }
+        
+        $formdata['pass_null'] = !isset($passState);
+        $this->multiform->setForm('change_password');
+        $this->template->body('userpanel/forms/change_password_form', $formdata);
+    }
+    
     
     //foorumis navigeerimiseks
     //fid - foorum, kus hetkel ollakse
@@ -110,11 +189,99 @@ class Main extends CI_Controller {
         }
         
         $data['path'] = $path;
-        $this->template->body('navigator', $data);
+        $this->template->prebody('navigator', $data);
     }
     
-    //foorumid, millel pole vanemaid
-    private function rootforums(){
+    //registreerimise aken
+    private function register(){
+        if($this->multiform->is_form('register')){
+            
+            //register spam limit
+            if($this->session->userdata('register_limit')){
+                $register_second = $this->session->userdata('register_limit');
+                $time_since_register = now() - $register_second;
+                $wait_time = 0;
+                if($time_since_register < $wait_time){
+                    echo 'Oota '.($wait_time - $time_since_register).' sekundit enne uuesti registreerimist.';
+                    return;
+                }else{
+                    $this->session->unset_userdata('register_limit');
+                }
+            }
+            
+            if($this->form_validation->run('register')){ 
+                echo 'registreerimine käivitus';
+                $this->load->model('user_model');
+                $this->load->library('auth');
+                $user = $this->input->post('user');
+                $email = $this->input->post('email');
+                $pass = $this->input->post('pass');
+
+                $userdata = array(
+                    'name' => $user,
+                    'email' => $email,
+                    'pass' => $pass
+                );
+                $this->user_model->adduser($userdata);
+
+                $userid = $this->user_model->attemptLogin($user, $pass);
+
+                if(!$userid){
+                  echo 'wtf';
+                }else{
+                  $this->session->set_userdata('register_limit', now());
+
+                  $this->auth->login($userid);
+                  redirect(base_url());
+                }
+
+            }  
+        }
+        $this->multiform->setForm('register');
+        $this->template->prebody('forms/register_form');
+    }
+    
+    private function registergoogle(/*$enable = false*/){
+       // if($this->googleoauth2->hasValidAccessToken()){
+            if($this->multiform->is_form('registergoogle')/*|| $enable*/){
+
+                $this->form_validation->set_rules('user', 'Kasutajanimi', 'required');
+
+                if($this->form_validation->run()){ 
+                    $google_userinfo = $this->googleoauth2->getUserInfo();
+                    $google_uid = $google_userinfo->id;
+
+                    $user = $this->input->post('user');
+
+                    $userdata = array(
+                        'name' => $user,
+                        'email' => $google_userinfo->email
+                    );
+
+                    $this->user_model->addUserGoogle($userdata, $google_uid);
+
+                    $userid = $this->user_model->attemptLoginGoogle($google_uid);
+
+                    if($userid){ 
+                        $this->auth->login($userid);
+                        redirect(current_url());
+                    } 
+                }
+            }
+            $formdata['google_email'] = $this->session->userdata('google_email');
+            $this->multiform->setForm('registergoogle');
+            $this->template->prebody('forms/registergoogle_form', $formdata);
+        //}
+
+    }
+    
+    //pealeht
+    public function index(){   
+        $this->template->setTitle($this->lang->line('index_website_title'));
+        
+        $this->navigator();
+        
+        //foorumid, millel pole vanemaid
         $rootforums = $this->forum_model->getRootForums();
         foreach($rootforums as $row){
             $data['row'] = $row;
@@ -300,6 +467,7 @@ class Main extends CI_Controller {
         //form
         if($this->auth->isLoggedIn()){ 
             if($this->multiform->is_form('addpost')){
+                echo 'juhtus';
                 $this->form_validation->set_rules('content', 'Sisu', 'required');
                 
                 if($this->form_validation->run()){
@@ -319,14 +487,13 @@ class Main extends CI_Controller {
             $data['submit'] = $this->lang->line('addpost_button');
             $data['content'] = $this->lang->line('addpost_content');
             
-            $data['callback'] = 'addpost';
+            $this->multiform->setForm('addpost');
             $this->template->body('forms/post_form', $data);  
         }else{
             $this->template->body('errors/no_permission');
         }
 
     }
-    
     
     //postituse muutmise vaade
     public function editpost($tid, $pid){
@@ -370,7 +537,8 @@ class Main extends CI_Controller {
                 $data['submit'] = $this->lang->line('editpost_button');
                 
                 $data['content'] = $post['content'];
-                $data['callback'] = 'editpost';
+
+                $this->multiform->setForm('editpost');
                 $this->template->body('forms/post_form', $data); 
             }else{
                 $this->template->body('errors/no_permission');
@@ -382,57 +550,73 @@ class Main extends CI_Controller {
 
     }
     
-    //registreerimise aken
-    private function register(){
-        if($this->multiform->is_form('register')){
+    public function admin(){
+        /*$path = array();
+        
+        $segments = array('main');
+        $home_url = site_url($segments);
+        $path[] = array('Kodu', $home_url);
+        
+        $data['path'] = $path;
+        $this->template->body('navigator', $data);*/
+        $this->navigator();
+        
+        if($this->auth->isLoggedIn()){
             
-            //register spam limit
-            if($this->session->userdata('register_limit')){
-                $register_second = $this->session->userdata('register_limit');
-                $time_since_register = now() - $register_second;
-                $wait_time = 0;
-                if($time_since_register < $wait_time){
-                    echo 'Oota '.($wait_time - $time_since_register).' sekundit enne uuesti registreerimist.';
-                    return;
+            $this->load->model(array('user_model', 'usergroup_model'));
+            $usergroup = $this->usergroup_model->getActiveUserGroup();
+
+            if($usergroup['addforum']){
+                $this->load->model('forum_model');
+
+                $this->load->helper('form');   
+                $this->load->library('form_validation');
+                if($this->input->post('form') == 'addforum'){
+                    $this->form_validation->set_rules('p_fid', 'Vanem', 'required');
+                    $this->form_validation->set_rules('name', 'Nimi', 'required');
+
+                    if($this->form_validation->run() == FALSE){
+                    }else{
+                        $p_fid = $this->input->post('p_fid');
+                        $data = array(
+                            'p_fid' => ($p_fid == 'null' ? null : $p_fid),
+                            'name' => $this->input->post('name'),
+                            'uid' => $this->auth->getUserId()
+                        );
+                        $this->forum_model->addForum($data);
+                        echo 'Foorum '.$data['name'].' lisatud!<br>';
+                    } 
                 }else{
-                    $this->session->unset_userdata('register_limit');
+
                 }
+                if($this->input->post('form') == 'delforum'){
+                    $this->form_validation->set_rules('fid', 'Foorum', 'required');
+
+                    if($this->form_validation->run() == FALSE){
+                    }else{
+                        $fid = $this->input->post('fid');
+                        $forum = $this->forum_model->getForum($fid);
+                        
+                        $this->forum_model->delForum($fid);
+                        echo 'Foorum '.$forum['name'].' kustutatud!<br>';
+                    } 
+                }else{
+
+                }
+
+                $data['forums'] = $this->forum_model->getForums();
+                
+                $this->multiform->setForm('addforum');
+                $this->template->body('forms/addforum_form', $data); 
+                $this->multiform->setForm('delforum');
+                $this->template->body('forms/delforum_form', $data); 
+            }else{
+                echo 'Sul pole õigusi, et foorumeid lisada!';
             }
             
-            $this->form_validation->set_rules('user', 'Kasutajanimi', 'required');
-            $this->form_validation->set_rules('email', 'Email', 'required');
-            $this->form_validation->set_rules('pass', 'Salasõna', 'required');
-            $this->form_validation->set_rules('passconf', 'Salasõna kontroll', 'required');
-
-            if($this->form_validation->run() == FALSE){ 
-            }else{  
-                $this->load->model('user_model');
-                $this->load->library('auth');
-                $user = $this->input->post('user');
-                $email = $this->input->post('email');
-                $pass = $this->input->post('pass');
-
-                $userdata = array(
-                    'name' => $user,
-                    'email' => $email,
-                    'pass' => $pass
-                );
-                $this->user_model->adduser($userdata);
-
-                $userid = $this->user_model->attemptLogin($user, $pass);
-
-                if(!$userid){
-                  echo 'wtf';
-                }else{
-                  $this->session->set_userdata('register_limit', now());
-
-                  $this->auth->login($userid);
-                  redirect(base_url());
-                }
-
-            }  
+        }else{
+            redirect(base_url());
         }
-        $this->template->prebody('forms/register_form');
     }
     
 }

@@ -1,10 +1,9 @@
 <?php
-
-
-    $level  = $row_item['depth'];?>
+$level  = $row_item['depth'];
+?>
  <div style="border:1px solid;position: relative;right: <?php echo -20*$level; ?>px;">
      <h5 style="margin-top: 0px;padding-top: 0px">
-         <?php echo $row_item['post_create_time'].' - user['.$row_item['name'].'] - id['.$row_item['post_id'].']'.' - parent['.$row_item['p_pid'].']'; ?>
+        <?php echo $row_item['post_edit_time'].' - user['.$row_item['name'].'] - id['.$row_item['post_id'].']'.' - parent['.$row_item['p_pid'].']'; ?>
         
         <?php
         if ($this->auth->isLoggedIn()){

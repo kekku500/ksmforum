@@ -1,13 +1,9 @@
 <p>Kustuta foorumeid</p>
 
 <?php 
-if($this->input->post('form') == 'delforum')
-    echo validation_errors(); 
+echo $this->multiform->validation_errors();
 
-$segments = array('admin');
-echo form_open(site_url($segments)); ?>
-
-<input type="hidden" name="form" value="delforum" />
+echo $this->multiform->form_open(current_url()); ?>
 
 <p style="margin-bottom: 0px;">Valik</p>
 <select name="fid">
