@@ -6,10 +6,10 @@ echo $this->multiform->validation_errors();
     echo $this->multiform->form_open(current_url()); 
     ?>
     
-    Kasutajanimi:
-    <input type="text" name="user" value="<?php echo $this->lang->line('login_user'); ?>" size="25" /><br>
+    <?php echo $this->lang->line('login_user'); ?>
+    <input type="text" name="user" value="<?php echo set_value('user'); ?>" size="25" /><br>
     
-    Email:
+    <?php echo $this->lang->line('register_email'); ?>
     <input disabled type="text" name="dontcare_meh" value="<?php echo $google_email; ?>" size="30" /><br>
 
     <div>

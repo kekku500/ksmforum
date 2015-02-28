@@ -132,36 +132,44 @@ class Main extends CI_Controller {
             return;
         }
         
-        $passState = $this->user_model->checkPassword("huvitav, kas pass on null?");    
         if($this->multiform->is_form('change_password')){
+            $passState = $this->user_model->checkPassword("huvitav, kas pass on null?");   
             
-            if(isset($passState))
-                $this->form_validation->set_rules('oldpass', 'Vana salasõna', 'required');
-            $this->form_validation->set_rules('pass', 'Uus salasõna', 'required');
-            $this->form_validation->set_rules('passconf', 'Uue salasõna kontroll', 'required');
-
-            if($this->form_validation->run()){ 
-                $oldpass = $this->input->post('oldpass');
+            $form_val_rule = 'changepassword';
+            if(!isset($passState)){
+                $form_val_rule = 'changepassword_no_old';
+            }
+            
+            if($this->form_validation->run($form_val_rule)){ 
                 $pass = $this->input->post('pass');
                 
-                $passState = $this->user_model->checkPassword($oldpass);
-                echo 'state:'.$passState;
-                if(!isset($passState)){
-                    $this->user_model->changePassword($pass);
-                    $passState = 'pass oli tühi';
-                }else if($passState){  
-                    $this->user_model->changePassword($pass);
-                    echo 'salasõna vahetatud';
-                }else{
-                    echo 'vana pass vale';
-                }
+                $this->user_model->changePassword($pass);
+                
+                $passState = 'pass changed';
 
-            }  
+                $this->multiform->setSuccessMessage($this->lang->line('changepassword_success_msg'));
+            } 
         }
-        
+ 
         $formdata['pass_null'] = !isset($passState);
         $this->multiform->setForm('change_password');
         $this->template->body('userpanel/forms/change_password_form', $formdata);
+    }
+    
+    public function changePasswordCheck(){
+        $oldpass = $this->input->post('oldpass');
+        $passState = $this->user_model->checkPassword($oldpass);
+        if($passState == false)
+            return false;
+        return true;
+    }
+    
+    public function oldNewPasswordMismatch(){
+        $oldpass = $this->input->post('oldpass');
+        $pass = $this->input->post('pass');
+        if($oldpass == $pass)
+            return false;
+        return true;
     }
     
     
@@ -245,9 +253,7 @@ class Main extends CI_Controller {
        // if($this->googleoauth2->hasValidAccessToken()){
             if($this->multiform->is_form('registergoogle')/*|| $enable*/){
 
-                $this->form_validation->set_rules('user', 'Kasutajanimi', 'required');
-
-                if($this->form_validation->run()){ 
+                if($this->form_validation->run('registergoogle')){ 
                     $google_userinfo = $this->googleoauth2->getUserInfo();
                     $google_uid = $google_userinfo->id;
 
@@ -470,10 +476,8 @@ class Main extends CI_Controller {
         //form
         if($this->auth->isLoggedIn()){ 
             if($this->multiform->is_form('addpost')){
-                echo 'juhtus';
-                $this->form_validation->set_rules('content', 'Sisu', 'required');
                 
-                if($this->form_validation->run()){
+                if($this->form_validation->run('addeditpost')){
                     $this->post_model->addPost($tid, $pid, $this->input->post('content'));
                     $segments = array('main', 'topic', $tid);
 
@@ -518,10 +522,9 @@ class Main extends CI_Controller {
             //kas autor muudab postitust?
             if($this->auth->getUserId() == $uid){
                 if($this->input->post('form') == 'editpost'){
-                    $this->form_validation->set_rules('content', 'Sisu', 'required');
                     
                     //postitame ja lähme teemasse tagasi
-                    if($this->form_validation->run()){
+                    if($this->form_validation->run('addeditpost')){
                         $this->post_model->editPost($pid, $this->input->post('content'));
 
                         $segments = array('main', 'topic', $tid);

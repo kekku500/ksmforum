@@ -111,6 +111,63 @@ $config = array(
                         'min_length['.$config['postcontent_min_length'].']|'.
                         'max_length['.$config['postcontent_max_length'].']'
                     )
-                  )
+                  ),
+    'addeditpost' => array(
+                    array(
+                     'field'   => 'content',
+                     'label'   => 'Sisu',
+                     'rules'   => 'required|'.
+                        'min_length['.$config['postcontent_min_length'].']|'.
+                        'max_length['.$config['postcontent_max_length'].']'
+                    )
+                  ),
+    'changepassword' => array(
+                            array(
+                             'field'   => 'oldpass',
+                             'label'   => 'Vana salasõna',
+                             'rules'   => 'required|'.
+                                'min_length['.$config['password_min_length'].']|'.
+                                'max_length['.$config['password_max_length'].']|'.
+                                'callback_changePasswordCheck'
+                            ),
+                            array(
+                             'field'   => 'pass',
+                             'label'   => 'Uus salasõna',
+                             'rules'   => 'required|'.
+                                'min_length['.$config['password_min_length'].']|'.
+                                'max_length['.$config['password_max_length'].']|'.
+                                'callback_oldNewPasswordMismatch'
+                            ),
+                            array(
+                             'field'   => 'passconf',
+                             'label'   => 'Uue salasõna kontroll',
+                             'rules'   => 'required|matches[pass]'
+                            )
+                        ),
+    'changepassword_no_old' => array(
+                            array(
+                             'field'   => 'pass',
+                             'label'   => 'Uus salasõna',
+                             'rules'   => 'required|'.
+                                'min_length['.$config['password_min_length'].']|'.
+                                'max_length['.$config['password_max_length'].']'
+                            ),
+                            array(
+                             'field'   => 'passconf',
+                             'label'   => 'Uue salasõna kontroll',
+                             'rules'   => 'required|matches[pass]'
+                            )
+                        ),
+    'registergoogle' => array(
+                        array(
+                         'field'   => 'user',
+                         'label'   => 'Kasutajanimi',
+                         'rules'   => 'required|'.
+                                    'min_length['.$config['username_min_length'].']|'.
+                                    'max_length['.$config['username_max_length'].']|'.
+                                    'is_unique[users.name]|'.
+                                    'alpha_numeric'
+                        )
+                     )
 );
 

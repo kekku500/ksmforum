@@ -36,6 +36,7 @@ $lang['changepassword_button'] = 'Vaheta salasõna';
 $lang['changepassword_oldpassword'] = 'Vana salasõna';
 $lang['changepassword_newpassword'] = 'Uus salasõna';
 $lang['changepassword_newpassword_2'] = 'Uue salasõna kontroll';
+$lang['changepassword_success_msg'] = 'Salasõna vahetamine õnnestus.';
 
 $lang['addforum_header'] = 'Loo foorumeid';
 $lang['addforum_parent'] = 'Vanem';

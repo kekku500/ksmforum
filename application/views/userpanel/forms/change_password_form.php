@@ -2,6 +2,8 @@
     <p><?php echo $this->lang->line('changepassword_header'); ?></p>
     <?php 
     echo $this->multiform->validation_errors();
+    
+    echo $this->multiform->getSuccessMessage();
     ?>
 
     <?php
