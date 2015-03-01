@@ -7,7 +7,7 @@ echo $this->multiform->validation_errors();
     ?>
     
     <?php echo $this->lang->line('login_user'); ?>
-    <input type="text" name="user" value="<?php echo set_value('user'); ?>" size="25" /><br>
+    <input type="text" name="user" value="<?php echo $this->multiform->set_value('user'); ?>" size="25" /><br>
     
     <?php echo $this->lang->line('register_email'); ?>
     <input disabled type="text" name="dontcare_meh" value="<?php echo $google_email; ?>" size="30" /><br>

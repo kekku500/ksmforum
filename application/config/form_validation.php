@@ -136,7 +136,7 @@ $config = array(
                              'rules'   => 'required|'.
                                 'min_length['.$config['password_min_length'].']|'.
                                 'max_length['.$config['password_max_length'].']|'.
-                                'callback_oldNewPasswordMismatch'
+                                'mismatches[oldpass]'
                             ),
                             array(
                              'field'   => 'passconf',

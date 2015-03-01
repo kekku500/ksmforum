@@ -38,6 +38,12 @@ class Multiform {
             return validation_errors();
     }
     
+
+    function set_value($value){
+        if($this->ci->input->post('form') == $this->form)
+            return set_value($value);
+    }
+    
     function form_error($field){
         if($this->ci->input->post('form') == $this->form)
             return form_error($field);

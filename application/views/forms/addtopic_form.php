@@ -8,7 +8,7 @@ echo $this->multiform->validation_errors();
 echo $this->multiform->form_open(current_url());  ?>
 
     <?php echo $this->lang->line('addtopic_title'); ?><br>
-    <input type="text" name="title" value="<?php echo set_value('title'); ?>" size="50" /><br>
+    <input type="text" name="title" value="<?php echo $this->multiform->set_value('title'); ?>" size="50" /><br>
 
     <?php echo $this->lang->line('addtopic_content'); ?><br>
     <?php echo form_textarea(array(

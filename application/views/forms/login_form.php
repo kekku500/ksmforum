@@ -9,7 +9,7 @@ echo $this->multiform->form_error('loginAttempt_field');
     
     <?php echo $this->multiform->form_error('user'); ?>
     <?php echo $this->lang->line('login_user')?>
-    <input type="text" name="user" value="<?php echo set_value('user'); ?>" size="25" /><br>
+    <input type="text" name="user" value="<?php echo $this->multiform->set_value('user'); ?>" size="25" /><br>
 
     <?php echo $this->multiform->form_error('pass'); ?>
     <?php echo $this->lang->line('login_pass')?>

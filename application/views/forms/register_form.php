@@ -6,10 +6,10 @@ echo $this->multiform->validation_errors();
     echo $this->multiform->form_open(current_url()); 
     ?>
     <?php echo $this->lang->line('login_user'); ?>
-    <input type="text" name="user" value="<?php echo set_value('user'); ?>" size="25" /><br>
+    <input type="text" name="user" value="<?php echo $this->multiform->set_value('user'); ?>" size="25" /><br>
 
     <?php echo $this->lang->line('register_email'); ?>
-    <input type="text" name="email" value="<?php echo set_value('email'); ?>" size="50" /><br>
+    <input type="text" name="email" value="<?php echo $this->multiform->set_value('email'); ?>" size="50" /><br>
 
     <?php echo $this->lang->line('login_pass'); ?>
     <input type="text" name="pass" value="" size="50" /><br>

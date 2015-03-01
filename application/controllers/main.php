@@ -7,7 +7,7 @@ class Main extends CI_Controller {
         parent::__construct();
 
         $this->load->library(array('multiform', 'form_validation', 'googleoauth2'));
-        $this->load->model(array('topic_model', 'post_model', 'forum_model', 'user_model', 'usergroup_model'));
+        $this->load->model(array('topic_model', 'post_model', 'forum_model', 'user_model', 'usergroup_model', 'session_model'));
         $this->load->helper(array('url','date', 'form')); 
    
         
@@ -27,6 +27,11 @@ class Main extends CI_Controller {
     
     //kutsutakse kõige lõpus
     private function end(){
+        $this->template->postbody('footer', array(
+            'users_online' => $this->user_model->onlineUserCount(),
+            'visitors' => $this->session_model->visitorCount()
+        ));
+        
         $this->template->load('default'); 
     }
     
@@ -61,7 +66,7 @@ class Main extends CI_Controller {
             $google_uid = $userinfo->id;
             $this->session->set_userdata('google_email', $userinfo->email);
 
-            $userid = $this->user_model->attemptLoginGoogle($google_uid);
+            $userid = $this->user_model->getUserId_GoogleId($google_uid);
 
             if($userid){ //account found
                 $this->auth->login($userid);
@@ -98,7 +103,8 @@ class Main extends CI_Controller {
         $user = $this->input->post('user');
         $pass = $this->input->post('pass');
 
-        $userid = $this->user_model->attemptLogin($user, $pass);
+        $userid = $this->user_model->getUserId_UserPass($user, $pass);
+        
         if($userid){
             $this->auth->login($userid);
             return true;
@@ -117,24 +123,21 @@ class Main extends CI_Controller {
     }
     
     public function logout($url){
-        if($this->googleoauth2->hasAccessToken())
-            $this->googleoauth2->destroyAccessToken();
         $this->auth->logout();
-
+        
         redirect(base64_decode($url));
     }
     
-    public function userpanel(){
+    public function userpanel(){   
         $this->navigator();
         
         if(!$this->auth->isLoggedIn()){
             redirect(base_url());
             return;
         }
-        
+        $passState = $this->user_model->checkPassword("huvitav, kas pass on null?"); 
         if($this->multiform->is_form('change_password')){
-            $passState = $this->user_model->checkPassword("huvitav, kas pass on null?");   
-            
+              
             $form_val_rule = 'changepassword';
             if(!isset($passState)){
                 $form_val_rule = 'changepassword_no_old';
@@ -163,15 +166,6 @@ class Main extends CI_Controller {
             return false;
         return true;
     }
-    
-    public function oldNewPasswordMismatch(){
-        $oldpass = $this->input->post('oldpass');
-        $pass = $this->input->post('pass');
-        if($oldpass == $pass)
-            return false;
-        return true;
-    }
-    
     
     //foorumis navigeerimiseks
     //fid - foorum, kus hetkel ollakse
@@ -232,7 +226,7 @@ class Main extends CI_Controller {
                 );
                 $this->user_model->adduser($userdata);
 
-                $userid = $this->user_model->attemptLogin($user, $pass);
+                $userid = $this->user_model->getUserId_UserPass($user, $pass);
 
                 if(!$userid){
                   echo 'wtf';
@@ -264,9 +258,9 @@ class Main extends CI_Controller {
                         'email' => $google_userinfo->email
                     );
 
-                    $this->user_model->addUserGoogle($userdata, $google_uid);
+                    $this->user_model->addUser_Google($userdata, $google_uid);
 
-                    $userid = $this->user_model->attemptLoginGoogle($google_uid);
+                    $userid = $this->user_model->getUserId_GoogleId($google_uid);
 
                     if($userid){ 
                         $this->auth->login($userid);

@@ -3,35 +3,35 @@
 
 class Auth{
     
-    private $ci;
-    
-    private $loggedout = false;
+    private $CI;
     
     public function __construct() {
-        $this->ci =& get_instance();
+        $this->CI =& get_instance();
     }
 
     function isLoggedIn(){
-      if(!$this->ci->session->userdata('user_id'))
+      if(!$this->CI->session->userdata('user_id'))
           return false;
       return true;
     }
     
-    function justLoggedOut(){
-        return $this->loggedout;
-    }
-    
     function login($userid){
-        $this->ci->session->set_userdata('user_id', $userid);
+        $this->CI->user_model->bindSessionToUser($userid);
+        
+        $this->CI->session->set_userdata('user_id', $userid);
     }
     
     function logout(){
-        $this->ci->session->unset_userdata('user_id');
-        $this->loggedout = true;
+        if($this->CI->googleoauth2->hasAccessToken())
+            $this->CI->googleoauth2->destroyAccessToken();
+        
+        $this->CI->user_model->unbindSessionFromUser($this->getUserId());
+        
+        $this->CI->session->unset_userdata('user_id');
     }
     
     function getUserId(){
-        return $this->ci->session->userdata('user_id');
+        return $this->CI->session->userdata('user_id');
     }
     
 }

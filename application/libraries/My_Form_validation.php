@@ -10,6 +10,18 @@ class MY_Form_validation extends CI_Form_validation {
         return count($this->_error_array);
     }
     
+	/**
+	 * Match one field to another
+	 *
+	 * @access	public
+	 * @param	string
+	 * @param	field
+	 * @return	bool
+	 */
+	public function mismatches($str, $field){
+		return !parent::matches($str, $field);
+	}
+    
 
     
 }

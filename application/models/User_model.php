@@ -4,13 +4,23 @@
 class User_model extends CI_Model {
     
     private $table = 'users';
+    private $user_to_session = 'sessionbinds';
+    private $user_to_google = 'googleusers';
+    private $ci_sessions = 'ci_sessions';
+
     
     public function __construct() {
         parent::__construct();
         $this->load->database();
     }
     
-    public function attemptLogin($user, $pass){
+    /**
+     * Sisselogimise kontrolliks mõeldud
+     * @param type $user kasutajanimi
+     * @param type $pass krüpteerimata parool
+     * @return boolean/int kasutaja id või false, kui kasutajat pole
+     */
+    function getUserId_UserPass($user, $pass){
        $this->load->library('encrypt');
        $query = $this->db->get_where($this->table, array(
            'name' => $user,
@@ -18,14 +28,45 @@ class User_model extends CI_Model {
        ));
        if($query->num_rows() == 0)
            return false;
-       return $query->row()->id;
+       return $query->row()->id; 
     }
     
-    public function attemptLoginGoogle($guid){
-        $result = $this->user_model->getUserJoinGoogleUsers($guid);
-        if(count($result) > 0) //account found
-            return $result['user_id'];
-        return false;
+     /**
+     * Sisselogimine läbi google id
+     * @param type $google_id kasutajanimi
+     * @return boolean/int kasutaja id või false, kui kasutajat pole
+     */
+    function getUserId_GoogleId($google_id){
+       $query = $this->db->get_where($this->user_to_google, array(
+           'id' => $google_id
+       ));
+       if($query->num_rows() == 0)
+           return false;
+       return $query->row()->uid;
+    }
+    
+    function bindSessionToUser($id){
+        $data = array(
+            'uid' => $id,
+            'session_id' => $this->session->userdata('session_id')
+        );
+        
+        $this->db->insert($this->user_to_session, $data);
+    }
+    
+    function unbindSessionFromUser($id){
+        $this->db->where('session_id', $this->session->userdata('session_id'));
+        $this->db->delete($this->user_to_session);
+    }
+    
+    function onlineUserCount(){
+        $this->db->select('count(*) as amount');
+        $this->db->join($this->ci_sessions, $this->ci_sessions.'.session_id = '.$this->user_to_session.'.session_id');
+        $this->db->where('last_activity >=', (now()-$this->config->item('sess_time_to_update')));
+        $this->db->group_by('uid');
+        
+        $query = $this->db->get($this->user_to_session);
+        return $query->num_rows();
     }
     
     //peab sisse logitud olema
@@ -56,26 +97,8 @@ class User_model extends CI_Model {
         ));
     }
     
-    public function getUserByEmail($email){
-        $query = $this->db->get_where($this->table, array('email' => $email));
-        return $query->row_array();
-    }
-    
     public function getUser($id){
         $query = $this->db->get_where($this->table, array('id' => $id));
-        return $query->row_array();
-    }
-    
-    
-    public function getUserJoinGoogleUsers($guid){
-        $this->db->join('googleusers', 'googleusers.uid = '.$this->table.'.id');
-        $this->db->select(
-                'users.id as user_id,
-                googleusers.id as googleuser_id,
-                name,
-                pass,
-                email');
-        $query = $this->db->get_where($this->table, array('googleusers.id' => $guid));
         return $query->row_array();
     }
     
@@ -85,10 +108,10 @@ class User_model extends CI_Model {
         $this->db->insert($this->table, $data);
     }
     
-    public function addUserGoogle($userdata, $guid){
+    public function addUser_Google($userdata, $google_id){
         $this->db->insert($this->table, $userdata);
         $this->db->insert('googleusers', array(
-            'id' => $guid, 
+            'id' => $google_id, 
             'uid' => $this->db->insert_id()));
     }
     
