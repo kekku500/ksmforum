@@ -40,6 +40,7 @@ class Topic_model extends CI_Model {
     }
     
     public function addTopic($data){
+        $this->db->set('create_time', 'NOW()', FALSE);
         $this->db->insert($this->table, $data);
     }
     

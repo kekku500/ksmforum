@@ -118,12 +118,14 @@ class Post_model extends CI_Model {
     
     
     public function addPost($tid, $p_pid, $content){
+
         $data = array(
             'tid' => $tid,
             'p_pid' => ($p_pid == 'null' ? null : $p_pid),
             'content' => $content,
             'uid' => $this->auth->getUserId()
         );
+        $this->db->set('create_time', 'NOW()', FALSE);
 
         $this->db->insert($this->table, $data);
         
@@ -137,7 +139,7 @@ class Post_model extends CI_Model {
     public function editPost($pid, $content){
         $this->db->where('id', $pid);
         $this->db->update($this->table, array(
-            'content' => $content
+            'content' => $content,
         ));
     }
     

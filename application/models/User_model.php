@@ -105,10 +105,12 @@ class User_model extends CI_Model {
     public function addUser($data){
         $this->load->library('encrypt');
         $data['pass'] = $this->encrypt->sha1($data['pass']);
+        $this->db->set('create_time', 'NOW()', FALSE);
         $this->db->insert($this->table, $data);
     }
     
     public function addUser_Google($userdata, $google_id){
+        $this->db->set('create_time', 'NOW()', FALSE);
         $this->db->insert($this->table, $userdata);
         $this->db->insert('googleusers', array(
             'id' => $google_id, 

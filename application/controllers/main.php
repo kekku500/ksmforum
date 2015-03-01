@@ -475,7 +475,7 @@ class Main extends CI_Controller {
                     $this->post_model->addPost($tid, $pid, $this->input->post('content'));
                     $segments = array('main', 'topic', $tid);
 
-                    redirect(site_url($segments));
+                   // redirect(site_url($segments));
                 } 
             }
             //show to post you are replying to
