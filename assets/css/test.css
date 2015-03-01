@@ -1,3 +1,46 @@
-body {
-    background-color: green;
+* {
+
+ margin: 0px;
+ padding: 0px;
+
+}
+
+#login_form_outer {
+	position:absolute;
+	display: none;
+	left: 50%;
+	top: 10%;
+	z-index: 2;
+}
+
+#login_form_inner {
+	background-color: #E6E6E6;
+    border:5px solid #000000;
+	position: relative;
+	left: -50%;
+}
+
+#login_cover {
+	width: 100%;
+	height: 100%;
+	background: #000000;
+	opacity: 0.5;
+	display: none;
+	position: absolute;
+	z-index: 1;
+}
+
+#register_form_outer {
+	position:absolute;
+	display: none;
+	left: 50%;
+	top: 10%;
+	z-index: 2;
+}
+
+#register_form_inner {
+	background-color: #E6E6E6;
+    border:5px solid #000000;
+	position: relative;
+	left: -50%;
 }

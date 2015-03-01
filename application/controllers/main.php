@@ -9,7 +9,7 @@ class Main extends CI_Controller {
         $this->load->library(array('multiform', 'form_validation', 'googleoauth2'));
         $this->load->model(array('topic_model', 'post_model', 'forum_model', 'user_model', 'usergroup_model', 'session_model'));
         $this->load->helper(array('url','date', 'form')); 
-   
+		
         
         $segments = array('main', 'oauth2callback');
         $this->googleoauth2->setCallbackUrlSegments($segments);
@@ -19,7 +19,9 @@ class Main extends CI_Controller {
         $this->lang->load('forum');
         
         $this->template->addJS('assets/js/jquery-1.11.2.min.js');
-        
+	$this->template->addJS('assets/js/test.js');
+        $this->template->addCSS('assets/css/test.css');
+		
         $this->check_login();
         
         $this->user_controls();
@@ -52,7 +54,9 @@ class Main extends CI_Controller {
             return;
 
         if($this->multiform->is_form('login')){
-            $this->form_validation->run('login');
+            if($this->form_validation->run('login') == false){
+				$this->template->postbody('re_loginpopup.php');
+			}
             //loogika on funcktioonis loginAttempt()
         }
         
@@ -237,7 +241,9 @@ class Main extends CI_Controller {
                   redirect(base_url());
                 }
 
-            }  
+            }else{
+				$this->template->postbody('re_registerpopup.php');
+			}
         }
         $this->multiform->setForm('register');
         $this->template->prebody('forms/register_form');
@@ -381,8 +387,7 @@ class Main extends CI_Controller {
     
     //teema vaade, comments n shit
     public function topic($tid){
-        $this->viewed_topic($tid);
-        $this->load->model('user_model');        
+        $this->viewed_topic($tid);       
         
         $topic = $this->topic_model->getTopic($tid);
         

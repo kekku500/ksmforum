@@ -2,8 +2,8 @@
     <?php
     if(!$this->auth->isLoggedIn()){
     ?>
-        <a style="padding:5px" href="#">Registreeri</a>
-        <a style="padding:5px" href="#">Logi sisse</a>
+        <a style="padding:5px" onclick="registerPopup()" href="#">Registreeri</a>
+        <a onclick="loginPopup()" style="padding:5px" href="#">Logi sisse</a>
     <?php
     }else{
         ?>
