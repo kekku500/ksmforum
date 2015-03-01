@@ -1,9 +1,8 @@
-<?php 
-echo $this->multiform->validation_errors();
-?>
 <div id="registergoogle_form_outer">   
     <div id="registergoogle_form_inner"> 
         <?php
+        echo $this->multiform->validation_errors();
+        
         echo $this->multiform->form_open(current_url()); 
         ?>
 
