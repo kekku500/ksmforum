@@ -1,0 +1,1 @@
+<script>registerGooglePopup();</script>

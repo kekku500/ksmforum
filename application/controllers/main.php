@@ -55,8 +55,8 @@ class Main extends CI_Controller {
 
         if($this->multiform->is_form('login')){
             if($this->form_validation->run('login') == false){
-				$this->template->postbody('re_loginpopup.php');
-			}
+		$this->template->postbody('re_loginpopup.php');
+	    }
             //loogika on funcktioonis loginAttempt()
         }
         
@@ -76,7 +76,7 @@ class Main extends CI_Controller {
                 $this->auth->login($userid);
                 redirect(current_url());
             }else{//account not found
-                
+                $this->template->postbody('re_registergooglepopup.php');
             }
         }
         
@@ -272,6 +272,8 @@ class Main extends CI_Controller {
                         $this->auth->login($userid);
                         redirect(current_url());
                     } 
+                }else{
+                    $this->template->postbody('re_registergooglepopup.php');
                 }
             }
             $formdata['google_email'] = $this->session->userdata('google_email');
