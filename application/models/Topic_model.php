@@ -9,22 +9,21 @@ class Topic_model extends CI_Model {
         $this->load->database();
     }
     
-    public function get_topics_by_forum($fid){
-        $query = $this->db->get_where($this->table, array('fid' => $fid));
-        return $query->result_array();
-    }
-    
-    public function get_topic_name($tid){
-        $this->db->select('name');
-        $query = $this->db->get_where($this->table, array('id' => $tid));
-        return $query->row_array();
-    }
-    
+    /**
+     * @param type $fid foorumi id
+     * @return type kõik teemad, mis on foorumis id-ga fid
+     */
     public function getTopics($fid){
         $query = $this->db->get_where($this->table, array('fid' => $fid));
         return $query->result_array();
     }
     
+    /**
+     * Igas foorumis peab teema pealkiri olema unikaalne; selle kontroll.
+     * @param type $fid foorumi id
+     * @param type $title teema pealkiri
+     * @return boolean kas on unikaalne või mitte?
+     */
     public function isUniqueTopicTitle($fid, $title){
         $query = $this->db->get_where($this->table, array(
                     'fid' => $fid,
@@ -34,25 +33,40 @@ class Topic_model extends CI_Model {
         return false;
     }
     
+    /**
+     * @param type $tid teema id
+     * @return type ühe realine array()
+     */
     public function getTopic($tid){
         $query = $this->db->get_where($this->table, array('id' => $tid));
         return $query->row_array();
     }
     
+    /**
+     * Teema lisamine
+     * @param type $data tabeli topics veergude andmed
+     */
     public function addTopic($data){
         $this->db->set('create_time', 'NOW()', FALSE);
         $this->db->insert($this->table, $data);
     }
     
-    public function delTopic($tid){
-        
-    }
-    
+
+    /**
+     * Teema muutmine
+     * @param type $tid teema id
+     * @param type $data teema muutunud veerud ja sisu
+     */
     public function editTopic($tid, $data){
         $this->db->where('id', $tid);
         $this->db->update($this->table, $data);
     }
     
+    /**
+     * Teema välja muutmine. Kasulik näiteks vaatamise arvu suurendamiseks (views = views + 1)
+     * @param type $tid teema id
+     * @param type $set set käsk (nt viws = views + 1)
+     */
     public function editTopicSet($tid, $set){
         $set_count = count($set);
         for($i=0;$i<$set_count;$i++){
@@ -63,6 +77,10 @@ class Topic_model extends CI_Model {
         $this->db->where('id', $tid);
         $this->db->update($this->table);
     }
-            
+      
+    //TODO
+    public function delTopic($tid){
+        
+    }
     
 }

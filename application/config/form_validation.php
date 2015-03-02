@@ -80,7 +80,7 @@ $config = array(
                      'rules'   => 'required|'.
                         'min_length['.$config['forumname_min_length'].']|'.
                         'max_length['.$config['forumname_max_length'].']|'.
-                        'alpha_numeric'
+                        'alpha_numeric_spaces'
                     ),
                     array(
                      'field'   => 'p_fid',

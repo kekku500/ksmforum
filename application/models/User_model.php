@@ -7,8 +7,8 @@ class User_model extends CI_Model {
     private $user_to_session = 'sessionbinds';
     private $user_to_google = 'googleusers';
     private $ci_sessions = 'ci_sessions';
+    private $user_to_usergroup = 'usergroups';
 
-    
     public function __construct() {
         parent::__construct();
         $this->load->database();
@@ -45,6 +45,10 @@ class User_model extends CI_Model {
        return $query->row()->uid;
     }
     
+    /**
+     * Seostab kasutaja id sessiooni id-ga.
+     * @param type $id user id
+     */
     function bindSessionToUser($id){
         $data = array(
             'uid' => $id,
@@ -54,11 +58,19 @@ class User_model extends CI_Model {
         $this->db->insert($this->user_to_session, $data);
     }
     
+    /**
+     * Kustutab sessiooni ja kasutaja vahelise seose.
+     * @param type $id user id
+     */
     function unbindSessionFromUser($id){
         $this->db->where('session_id', $this->session->userdata('session_id'));
         $this->db->delete($this->user_to_session);
     }
     
+    /**
+     * 
+     * @return type Sisseloginud kasutajate arv.
+     */
     function onlineUserCount(){
         $this->db->select('count(*) as amount');
         $this->db->join($this->ci_sessions, $this->ci_sessions.'.session_id = '.$this->user_to_session.'.session_id');
@@ -69,12 +81,15 @@ class User_model extends CI_Model {
         return $query->num_rows();
     }
     
-    //peab sisse logitud olema
-    //Kontrollib, kas praeguse kasutaja parool on $pass.
-    //Kui andmebaasis on parool NULL, siis funktsioon tagastab null.
-    public function checkPassword($pass){
+    /**
+     * Kontrollib, kas kasutaja parool on $pass.
+     * @param type $id
+     * @param type $pass
+     * @return boolean/null Kui andmebaasis on parool NULL, siis funktsioon tagastab null.
+     */
+    public function checkPassword($id, $pass){
         $this->db->select('pass');
-        $query = $this->db->get_where($this->table, array('id' => $this->auth->getUserId()));
+        $query = $this->db->get_where($this->table, array('id' => $id));
         $correct_pass = $query->row_array()['pass'];
         
         if(empty($correct_pass))
@@ -87,21 +102,45 @@ class User_model extends CI_Model {
         return false;
     }
     
-    
-    //peab sisse logitud olema
-    public function changePassword($newpass){
+    /**
+     * 
+     * @param type $id 
+     * @param type $newpass krüptimata parool
+     */
+    public function changePassword($id, $newpass){
         $this->load->library('encrypt');
-        $this->db->where('id', $this->auth->getUserId());
+        $this->db->where('id', $id);
         $this->db->update($this->table, array(
             'pass' => $this->encrypt->sha1($newpass)
         ));
     }
     
+    public function getUserJoinUserGroup($uid){
+        $this->db->join($this->user_to_usergroup, 
+                $this->table.'.usergroup = '.$this->user_to_usergroup.'.id');
+        $this->db->select(
+                'usergroups.id as usergroup_id,'.
+                'usergroups.name as usergroup_name,'.
+                'addforum');
+        
+        $query = $this->db->get_where($this->table, array('users.id' => $uid));
+                
+        return $query->row_array();
+    }
+    
+    /**
+     * 
+     * @param type $id
+     * @return type array(), kõik kasutaja väljad
+     */
     public function getUser($id){
         $query = $this->db->get_where($this->table, array('id' => $id));
         return $query->row_array();
     }
     
+    /**
+     * @param array $data users tabelisse lisamine, väli pass krüpteeritakse
+     */
     public function addUser($data){
         $this->load->library('encrypt');
         $data['pass'] = $this->encrypt->sha1($data['pass']);
@@ -109,6 +148,10 @@ class User_model extends CI_Model {
         $this->db->insert($this->table, $data);
     }
     
+    /**
+     * @param type $userdata kasutaja andmed (eeldus, et pass = NULL)
+     * @param type $google_id 
+     */
     public function addUser_Google($userdata, $google_id){
         $this->db->set('create_time', 'NOW()', FALSE);
         $this->db->insert($this->table, $userdata);
@@ -117,11 +160,12 @@ class User_model extends CI_Model {
             'uid' => $this->db->insert_id()));
     }
     
-    
+    //TODO
     public function editUser($data){
         
     }
     
+    //TODO
     public function delUser($uid){
         
     }

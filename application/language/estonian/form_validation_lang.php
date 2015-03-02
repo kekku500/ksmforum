@@ -29,6 +29,8 @@ $lang['loginAttempt'] = "Vale kasutajanimi või salasõna.";
 $lang['addTopicCheck'] = "Teema pealkiri peab olema unikaalne foorumis.";
 $lang['changePasswordCheck'] = "Vana salasõna on vale.";
 $lang['mismatches']			= "Väli %s peab erinema väljast %s.";
+$lang['alpha_numeric_spaces'] = "Väli %s võib sisaldada ainult numbreid, alfabeetilisi tähemärke ja tühikuid.";
+
 
 /* End of file form_validation_lang.php */
 /* Location: ./system/language/english/form_validation_lang.php */

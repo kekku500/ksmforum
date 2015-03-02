@@ -1,33 +1,5 @@
 <?php
 
-class PostNode {
-    
-    private static $order_counter;
-    
-    public $children = array();
-    public $order;
-    
-    public $data;
-    
-    
-    public function preorder(){
-        $preordered_data = array();
-        $update_array = array();
-        $stack = array($this);
-        while(count($stack) > 0){
-            $node = array_pop($stack);
-            $node->order = ++self::$order_counter; //oluline osa
-            $preordered_data[] = $node->data;
-            $update_array[] = array('id' => $node->data['id'], 'pos' => $node->order);
-            foreach($node->children as $child){
-                $stack[] = $child;
-            }
-        }
-        return array($preordered_data, $update_array);
-    }
- 
-}
-
 class Post_model extends CI_Model {
     
     private $table = 'posts';
@@ -37,6 +9,13 @@ class Post_model extends CI_Model {
         $this->load->database();
     }
     
+    /**
+     * Konstrueerib puu tabeli posts põhjal kasutades parent post id.
+     * Läbib puu eesjärjestuses jättes meelde iga tipu positsiooni.
+     * Positsioonid kirutatakse posts tabelisse.
+     * @param type $tid teema id
+     * @return type
+     */
     private function updatePostsPosition($tid){
         $this->db->order_by("depth", "asc");
         $this->db->order_by("p_pid", "asc");
@@ -66,7 +45,13 @@ class Post_model extends CI_Model {
         
         return $res[0];
     }
-    
+    /**
+     * KEY JOIN-ib posts ja user tabelid ning tagastab
+     * väljad post_id, p_pid, tid, content, posts_edit_time,
+     * depth, pos, user_id, name, usergroup
+     * @param type $tid teema id
+     * @return type
+     */
     public function getPostsJoinUser($tid){
         $this->db->order_by("pos", "asc");
         $this->db->join('users', 'users.id = '.$this->table.'.uid');
@@ -75,7 +60,6 @@ class Post_model extends CI_Model {
                 p_pid,
                 tid,
                 content,
-                posts.create_time as post_create_time,
                 posts.edit_time as post_edit_time,
                 depth,
                 pos,
@@ -88,12 +72,23 @@ class Post_model extends CI_Model {
         return $query->result_array();
     }
     
+    /**
+     * @param type $pid kommentaari id
+     * @return type ühe elemendiga array()
+     */
     public function getPost($pid){
         $query = $this->db->get_where($this->table, array('id' => $pid));
         return $query->row_array();
     }
     
-        public function getPostJoinUser($pid){
+    /**
+     * KEY JOIN-ib post ja user tabelid ning tagastab
+     * väljad post_id, p_pid, tid, content, posts_edit_time,
+     * depth, pos, user_id, name, usergroup
+     * @param type $pid postituse id
+     * @return type array ühe elemendiga
+     */
+    public function getPostJoinUser($pid){
         $this->db->order_by("pos", "asc");
         $this->db->join('users', 'users.id = '.$this->table.'.uid');
         $this->db->select(
@@ -101,7 +96,6 @@ class Post_model extends CI_Model {
                 p_pid,
                 tid,
                 content,
-                posts.create_time as post_create_time,
                 posts.edit_time as post_edit_time,
                 depth,
                 pos,
@@ -114,9 +108,13 @@ class Post_model extends CI_Model {
         return $query->row_array();
     }
     
-    
-    
-    
+    /**
+     * 
+     * @param type $tid teema id
+     * @param type $p_pid vanema kommentaari id
+     * @param type $content sisu
+     * @return type tagastab postitused, mille positsioonid muutusid
+     */
     public function addPost($tid, $p_pid, $content){
 
         $data = array(
@@ -132,10 +130,11 @@ class Post_model extends CI_Model {
         return $this->updatePostsPosition($tid);
     }
     
-    public function delPost($pid){
-        
-    }
-    
+    /**
+     * Muudab kommentaari
+     * @param type $pid kommentaari id
+     * @param type $content sisu
+     */
     public function editPost($pid, $content){
         $this->db->where('id', $pid);
         $this->db->update($this->table, array(
@@ -143,4 +142,38 @@ class Post_model extends CI_Model {
         ));
     }
     
+    //TODO
+    public function delPost($pid){
+        
+    }
+    
+}
+
+//Kommentaari puu loomiseks ja eesjärjestuse läibimiseks kasutatav mugavusobject.
+class PostNode {
+    
+    private static $order_counter;
+    
+    public $children = array();
+    public $order;
+    
+    public $data;
+    
+    
+    public function preorder(){
+        $preordered_data = array();
+        $update_array = array();
+        $stack = array($this);
+        while(count($stack) > 0){
+            $node = array_pop($stack);
+            $node->order = ++self::$order_counter; //oluline osa
+            $preordered_data[] = $node->data;
+            $update_array[] = array('id' => $node->data['id'], 'pos' => $node->order);
+            foreach($node->children as $child){
+                $stack[] = $child;
+            }
+        }
+        return array($preordered_data, $update_array);
+    }
+ 
 }

@@ -7,7 +7,7 @@ class Main extends CI_Controller {
         parent::__construct();
 
         $this->load->library(array('multiform', 'form_validation', 'googleoauth2'));
-        $this->load->model(array('topic_model', 'post_model', 'forum_model', 'user_model', 'usergroup_model', 'session_model'));
+        $this->load->model(array('topic_model', 'post_model', 'forum_model', 'user_model', 'session_model'));
         $this->load->helper(array('url','date', 'form')); 
 		
         
@@ -140,7 +140,7 @@ class Main extends CI_Controller {
             redirect(base_url());
             return;
         }
-        $passState = $this->user_model->checkPassword("huvitav, kas pass on null?"); 
+        $passState = $this->user_model->checkPassword($this->auth->getUserId(), "huvitav, kas pass on null?"); 
         if($this->multiform->is_form('change_password')){
               
             $form_val_rule = 'changepassword';
@@ -151,7 +151,7 @@ class Main extends CI_Controller {
             if($this->form_validation->run($form_val_rule)){ 
                 $pass = $this->input->post('pass');
                 
-                $this->user_model->changePassword($pass);
+                $this->user_model->changePassword($this->auth->getUserId(), $pass);
                 
                 $passState = 'pass changed';
 
@@ -166,7 +166,7 @@ class Main extends CI_Controller {
     
     public function changePasswordCheck(){
         $oldpass = $this->input->post('oldpass');
-        $passState = $this->user_model->checkPassword($oldpass);
+        $passState = $this->user_model->checkPassword($this->auth->getUserId(), $oldpass);
         if($passState == false)
             return false;
         return true;
@@ -397,7 +397,7 @@ class Main extends CI_Controller {
                 ));
         
                 
-        $data['topic'] = $this->topic_model->get_topic_name($tid);
+        $data['topic'] = $this->topic_model->getTopic($tid);
         $data['topic'] = $this->security->xss_clean($data['topic']);
 
         $data['rows'] = $this->post_model->getPostsJoinUser($tid);
@@ -480,7 +480,7 @@ class Main extends CI_Controller {
                     $this->post_model->addPost($tid, $pid, $this->input->post('content'));
                     $segments = array('main', 'topic', $tid);
 
-                   // redirect(site_url($segments));
+                    redirect(site_url($segments));
                 } 
             }
             //show to post you are replying to
@@ -555,14 +555,14 @@ class Main extends CI_Controller {
 
     }
     
+    
+    
     public function admin(){
         $this->navigator();
         
         if($this->auth->isLoggedIn()){
             
-            $this->load->model('usergroup_model');
-            $usergroup = $this->usergroup_model->getActiveUserGroup();
-
+            $usergroup = $this->user_model->getUserJoinUserGroup($this->auth->getUserId());
             if($usergroup['addforum']){
                 if($this->input->post('form') == 'addforum'){
                     if($this->form_validation->run('addforum')){

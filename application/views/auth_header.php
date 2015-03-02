@@ -19,7 +19,7 @@
         $segments = array('main', 'userpanel');
         echo ' '.anchor(site_url($segments), 'Seaded');
 
-        if($this->usergroup_model->getActiveUserGroup()['name'] == 'admin'){
+        if($this->user_model->getUserJoinUserGroup($this->auth->getUserId())['usergroup_name'] == 'admin'){
             $segments = array('main', 'admin');
             echo ' '.anchor(site_url($segments), 'Admin');
         }
