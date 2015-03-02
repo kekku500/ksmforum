@@ -1,0 +1,35 @@
+#login_form_outer {
+	position:relative;
+	display: inline-block;
+	left: 0%;
+	top: 0%;
+	z-index: 0;
+}
+
+#login_form_inner {
+	left: 0%;
+}
+
+#register_form_outer {
+	position:relative;
+	display: inline-block;
+	left: 0%;
+	top: 0%;
+	z-index: 0;
+}
+
+#register_form_inner {
+	left: 0%;
+}
+
+#registergoogle_form_outer {
+	position:relative;
+	display: inline-block;
+	left: 0%;
+	top: 0%;
+	z-index: 0;
+}
+
+#registergoogle_form_inner {
+	left: 0%;
+}

@@ -19,8 +19,9 @@ class Main extends CI_Controller {
         $this->lang->load('forum');
         
         $this->template->addJS('assets/js/jquery-1.11.2.min.js');
-	$this->template->addJS('assets/js/test.js');
-        $this->template->addCSS('assets/css/test.css');
+	$this->template->addJS('assets/js/main.js');
+        $this->template->addCSS('assets/css/main.css');
+        $this->template->addCSS_Noscript('assets/css/main_noscript.css');
 		
         $this->check_login();
         
@@ -297,8 +298,7 @@ class Main extends CI_Controller {
             $forums = $this->forum_model->getForumsByParent($row['id']);
             
             if(count($forums) > 0){
-                $data['header']['name'] = $row['name'];
-                $data['header']['topic_count'] = 'Teemasid';
+                $data['th_1'] = sprintf($this->lang->line('forum_header_name'), $row['name']);
                 $this->template->body('forum/header', $data);
                 
                 foreach ($forums as $subrow){ 
@@ -325,11 +325,12 @@ class Main extends CI_Controller {
         $this->navigator($fid);
         
         //alamfoorumid
-        $data['header']['name'] = $forum['name'];
-        $this->template->body('subforum/header', $data);
+        $data['th_1'] = sprintf($this->lang->line('forum_header_name'), $forum['name']);
+        $this->template->body('forum/header', $data);
         
         $subforums = $this->forum_model->getForumsByParent($fid);
 
+        $data['header']['name'] = $forum['name'];
         foreach ($subforums as $row){ 
             $data['row'] = $row;
             
@@ -341,9 +342,6 @@ class Main extends CI_Controller {
 
         $data['row'] = $forum;
         $this->template->body('forum/footer', $data);
-        
-        //if($this->auth->isLoggedIn())
-            //$this->template->body('addtopic_anchor', $data);
         
         if($forum['p_fid'] != null){
             //teemad

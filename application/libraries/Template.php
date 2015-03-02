@@ -7,6 +7,7 @@ class Template{
     
     private $js_files = array();
     private $css_files = array();
+    private $css_ns_files = array();
     
     private $scripts;
     private $body;
@@ -37,7 +38,7 @@ class Template{
     
    function postbody($view, $vars = array()){
         $this->postbody .= $this->ci->load->view($view, $vars, true);
-    }
+   }
     
     function load($template, $vars = array()){
         if(count($vars) == 0)
@@ -67,6 +68,10 @@ class Template{
         $this->css_files[] = $name;
     }
     
+    function addCSS_Noscript($name){
+        $this->css_ns_files[] = $name;
+    }
+    
     private function load_JS_and_CSS(){
         $this->ci->load->helper('html', 'url');
         
@@ -75,6 +80,10 @@ class Template{
         }
         foreach ($this->css_files as $css){
             $this->scripts .= link_tag($css);
+        }
+        
+        foreach ($this->css_ns_files as $css){
+            $this->scripts .= '<noscript>'.link_tag($css).'</noscript>';
         }
         
     }

@@ -1,4 +1,4 @@
-<div style="border:1px solid blue;text-align:center;display: inline-block;padding:2px;">
+<div id="auth_header">
     <?php
     if(!$this->auth->isLoggedIn()){
     ?>

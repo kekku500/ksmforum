@@ -59,3 +59,28 @@
 	position: relative;
 	left: -50%;
 }
+
+
+#auth_header {
+    border:1px solid blue;
+    text-align:center;
+    display: inline-block;
+    padding:2px;
+}
+
+.forum_table, th, td {
+    border:1px solid black;
+    width: 80%;
+}
+
+.forum_table {
+    width:50%;
+}
+
+.forum_table td {
+    text-align: center;
+}
+
+.add_topic_link {
+    padding-left: 10px;
+}
