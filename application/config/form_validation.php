@@ -102,7 +102,7 @@ $config = array(
                      'rules'   => 'required|'.
                         'min_length['.$config['topicname_min_length'].']|'.
                         'max_length['.$config['topicname_max_length'].']|'.
-                        'alpha_numeric|callback_addTopicCheck'
+                        'alpha_numeric_spaces|callback_addTopicCheck'
                     ),
                     array(
                      'field'   => 'content',

@@ -54,6 +54,7 @@ $lang['addtopic_header'] = 'Lisa uus teema foorumisse %s';
 $lang['addtopic_title'] = 'Pealkiri';
 $lang['addtopic_content'] = 'Sisu';
 $lang['addtopic_button'] = 'Lisa';
+$lang['addtopics_ref_link'] = 'Loo uus teema';
 
 $lang['footer_users_online'] = 'Kasutajaid online: %s';
 $lang['footer_visitors'] = 'Külastajaid lehel: %s';

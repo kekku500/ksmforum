@@ -3,6 +3,7 @@
 class Topic_model extends CI_Model {
     
     private $table = 'topics';
+    private $users = 'users';
     
     public function __construct() {
         parent::__construct();
@@ -11,10 +12,19 @@ class Topic_model extends CI_Model {
     
     /**
      * @param type $fid foorumi id
-     * @return type kõik teemad, mis on foorumis id-ga fid
+     * @return type kõik teemad, mis on foorumis id-ga fid. Join teemade loojatega.
      */
     public function getTopics($fid){
-        $query = $this->db->get_where($this->table, array('fid' => $fid));
+        $this->db->select(
+            'topics.id as topic_id,'.
+            'topics.name as topic_name,'.
+            'topics.edit_time as topic_edit_time,'.
+            'topics.views as topic_views,'.
+            'topics.post_count as topic_post_count,'.
+            'users.name as user_name');
+        $this->db->join($this->users.' as users', $this->users.'.id = '.$this->table.'.uid');
+        $this->db->where('fid', $fid);
+        $query = $this->db->get($this->table.' as topics');
         return $query->result_array();
     }
     

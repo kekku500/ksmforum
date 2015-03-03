@@ -161,7 +161,7 @@ class Main extends CI_Controller {
  
         $formdata['pass_null'] = !isset($passState);
         $this->multiform->setForm('change_password');
-        $this->template->body('userpanel/forms/change_password_form', $formdata);
+        $this->template->body('forms/change_password_form', $formdata);
     }
     
     public function changePasswordCheck(){
@@ -290,29 +290,8 @@ class Main extends CI_Controller {
         
         $this->navigator();
         
-        //foorumid, millel pole vanemaid
-        $rootforums = $this->forum_model->getRootForums();
-        foreach($rootforums as $row){
-            $data['row'] = $row;
-
-            $forums = $this->forum_model->getForumsByParent($row['id']);
-            
-            if(count($forums) > 0){
-                $data['th_1'] = sprintf($this->lang->line('forum_header_name'), $row['name']);
-                $this->template->body('forum/header', $data);
-                
-                foreach ($forums as $subrow){ 
-                    $data['row'] = $subrow;
-
-                    $segments = array('main', 'forum', $subrow['id']);
-                    $data['row']['site_url'] = site_url($segments);
-
-                    $this->template->body('forum/row', $data);
-                }  
-                $data['row'] = $row;
-                $this->template->body('forum/footer', $data);
-            }
-        }
+        $data['forums'] = $this->forum_model->getIndexForums();
+        $this->template->body('forum/display', $data);
     }
     
     //foorumi vaade
@@ -325,46 +304,14 @@ class Main extends CI_Controller {
         $this->navigator($fid);
         
         //alamfoorumid
-        $data['th_1'] = sprintf($this->lang->line('forum_header_name'), $forum['name']);
-        $this->template->body('forum/header', $data);
+        $data['parent_forum'] = $this->forum_model->getForum($fid);
+        $data['forums'] = $this->forum_model->getForumsByParent($fid);
+        $this->template->body('subforum/display', $data);
         
-        $subforums = $this->forum_model->getForumsByParent($fid);
-
-        $data['header']['name'] = $forum['name'];
-        foreach ($subforums as $row){ 
-            $data['row'] = $row;
-            
-            $segments = array('main', 'forum', $row['id']);
-            $data['row']['site_url'] = site_url($segments);
-            
-            $this->template->body('forum/row', $data);
-        }  
-
-        $data['row'] = $forum;
-        $this->template->body('forum/footer', $data);
-        
-        if($forum['p_fid'] != null){
-            //teemad
-            $data['row']['name'] = $forum['name'];
-            $this->template->body('topic/table/header', $data);
-            
-            
-            $teemad = $this->topic_model->getTopics($fid);
-
-            foreach ($teemad as $row){ 
-                $segments = array('main', 'topic', $row['id']);
-                $row['site_url'] = site_url($segments);
-                $row['name'] = $this->security->xss_clean($row['name']);
-
-                $data['row'] = $row;
-
-                $this->template->body('topic/table/row', $data);
-            }  
-
-            $data['row'] = $forum;
-            $this->template->body('topic/table/footer', $data);
-        }
-
+        //teemad
+        $data['forum'] = $this->forum_model->getForum($fid);
+        $data['topics'] = $this->topic_model->getTopics($fid);
+        $this->template->body('topic/display', $data);
     }
     
     //kontrollib, kas teemat on vaadatud, kui ei, siis suurendab andmebaasis view count-i
