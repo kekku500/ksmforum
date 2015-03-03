@@ -24,7 +24,7 @@ function registerGooglePopup() {
 function popupOff() {
 	document.getElementById('login_form_outer').style.display = 'none';
 	document.getElementById('register_form_outer').style.display = 'none';
-        document.getElementById('registergoogle_form_outer').style.display = 'none';
+    document.getElementById('registergoogle_form_outer').style.display = 'none';
 	document.getElementById('login_cover').style.display = 'none';
 }
 
