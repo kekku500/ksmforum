@@ -291,7 +291,7 @@ class Main extends CI_Controller {
         $this->navigator();
         
         $data['forums'] = $this->forum_model->getIndexForums();
-        $this->template->body('forum/display', $data);
+        $this->template->body('forum/table', $data);
     }
     
     //foorumi vaade
@@ -306,12 +306,12 @@ class Main extends CI_Controller {
         //alamfoorumid
         $data['parent_forum'] = $this->forum_model->getForum($fid);
         $data['forums'] = $this->forum_model->getForumsByParent($fid);
-        $this->template->body('subforum/display', $data);
+        $this->template->body('subforum/table', $data);
         
         //teemad
         $data['forum'] = $this->forum_model->getForum($fid);
         $data['topics'] = $this->topic_model->getTopics($fid);
-        $this->template->body('topic/display', $data);
+        $this->template->body('topic/table', $data);
     }
     
     //kontrollib, kas teemat on vaadatud, kui ei, siis suurendab andmebaasis view count-i
@@ -343,8 +343,11 @@ class Main extends CI_Controller {
                     array($topic['name'], current_url())
                 ));
         
+        $data['topic'] = $topic;
+        $data['posts'] = $this->post_model->getPosts($tid);
                 
-        $data['topic'] = $this->topic_model->getTopic($tid);
+        $this->template->body('topic/posts_view', $data);
+        /*$data['topic'] = $this->topic_model->getTopic($tid);
         $data['topic'] = $this->security->xss_clean($data['topic']);
 
         $data['rows'] = $this->post_model->getPostsJoinUser($tid);
@@ -355,7 +358,7 @@ class Main extends CI_Controller {
             $row_item['content'] = $this->security->xss_clean($row_item['content']);
             $data['row_item'] = $row_item;
             $this->template->body('topic/topic_content', $data);
-        }
+        }*/
 
     }
     
@@ -421,7 +424,7 @@ class Main extends CI_Controller {
 
         //form
         if($this->auth->isLoggedIn()){ 
-            $data['row_item'] =  $this->post_model->getPostJoinUser($pid);
+            
             //if($this->auth->getUserId() != $data['row_item']['user_id']){
                 if($this->multiform->is_form('addpost')){
 
@@ -432,10 +435,11 @@ class Main extends CI_Controller {
                         redirect(site_url($segments));
                     } 
                 }
-                //show to post you are replying to
-
-                $data['row_item']['depth'] = 0;
-                $this->template->body('topic/topic_content', $data);
+                $data['posts'][0] =  $this->post_model->getPost($pid);
+                $data['posts'][0]['depth'] = 0;
+                $data['topic'] = $topic;
+                
+                $this->template->body('topic/posts_view', $data);
 
                 //language
                 $data['title'] = $this->lang->line('addpost_title');
@@ -467,7 +471,7 @@ class Main extends CI_Controller {
         
         //edit post form
         if($this->auth->isLoggedIn()){     
-            $post =  $this->post_model->getPostJoinUser($pid);
+            $post =  $this->post_model->getPost($pid);
             $uid = $post['user_id'];
             
             //kas autor muudab postitust?
@@ -484,10 +488,11 @@ class Main extends CI_Controller {
                     } 
                 }
                 
-                //näita muudetavad postitust
-                $data['row_item'] = $post;
-                $data['row_item']['depth'] = 0;
-                $this->template->body('topic/topic_content', $data);
+                //näita muudetavat postitust
+                $data['posts'][0] =  $post;
+                $data['posts'][0]['depth'] = 0;
+                $data['topic'] = $topic;
+                $this->template->body('topic/posts_view', $data);
                 
                 //lang
                 $data['title'] = $this->lang->line('editpost_title');

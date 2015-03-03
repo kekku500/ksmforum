@@ -3,6 +3,7 @@
 class Post_model extends CI_Model {
     
     private $table = 'posts';
+    private $users = 'users';
     
     public function __construct() {
         parent::__construct();
@@ -52,33 +53,23 @@ class Post_model extends CI_Model {
      * @param type $tid teema id
      * @return type
      */
-    public function getPostsJoinUser($tid){
+    public function getPosts($tid){
         $this->db->order_by("pos", "asc");
-        $this->db->join('users', 'users.id = '.$this->table.'.uid');
+        $this->db->join($this->users, $this->users.'.id = '.$this->table.'.uid');
         $this->db->select(
                 'posts.id as post_id,
-                p_pid,
-                tid,
+                posts.p_pid as parent_post_id,
                 content,
                 posts.edit_time as post_edit_time,
                 depth,
-                pos,
+                pos as position,
                 users.id as user_id,
-                name,
-                usergroup');
+                name as user_name');
         
-        $query = $this->db->get_where($this->table, array('tid' => $tid));
+        $this->db->where('tid', $tid);
+        $query = $this->db->get($this->table);
                 
         return $query->result_array();
-    }
-    
-    /**
-     * @param type $pid kommentaari id
-     * @return type ühe elemendiga array()
-     */
-    public function getPost($pid){
-        $query = $this->db->get_where($this->table, array('id' => $pid));
-        return $query->row_array();
     }
     
     /**
@@ -88,22 +79,21 @@ class Post_model extends CI_Model {
      * @param type $pid postituse id
      * @return type array ühe elemendiga
      */
-    public function getPostJoinUser($pid){
+    public function getPost($pid){
         $this->db->order_by("pos", "asc");
         $this->db->join('users', 'users.id = '.$this->table.'.uid');
         $this->db->select(
                 'posts.id as post_id,
-                p_pid,
-                tid,
+                posts.p_pid as parent_post_id,
                 content,
                 posts.edit_time as post_edit_time,
                 depth,
-                pos,
+                pos as position,
                 users.id as user_id,
-                name,
-                usergroup');
+                name as user_name');
         
-        $query = $this->db->get_where($this->table, array('posts.id' => $pid));
+         $this->db->where('posts.id', $pid);
+        $query = $this->db->get($this->table);
                 
         return $query->row_array();
     }

@@ -58,3 +58,6 @@ $lang['addtopics_ref_link'] = 'Loo uus teema';
 
 $lang['footer_users_online'] = 'Kasutajaid online: %s';
 $lang['footer_visitors'] = 'Külastajaid lehel: %s';
+
+$lang['post_anchor_add'] = 'Vasta';
+$lang['post_anchor_edit'] = 'Muuda';
