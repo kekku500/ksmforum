@@ -7,15 +7,19 @@ $level  = $row_item['depth'];
         
         <?php
         if ($this->auth->isLoggedIn()){
-            $segmentsadd = array('main', 'addpost', $row_item['tid'], $row_item['post_id']);
-            $segmentsedit = array('main', 'editpost', $row_item['tid'], $row_item['post_id']);
-           ?>
-           <a style="padding-left: 10px;" href="<?php echo site_url($segmentsadd); ?>">Vasta</a>
-           <?php 
-           if($this->auth->getUserId() == $row_item['user_id']){?>
-          <a style="padding-left: 10px;" href="<?php echo site_url($segmentsedit); ?>">Muuda</a>
-           <?php
-           }
+            
+            
+           
+            //if($this->auth->getUserId() != $row_item['user_id']){ 
+                $segmentsadd = array('main', 'addpost', $row_item['tid'], $row_item['post_id']);?>
+                <a style="padding-left: 10px;" href="<?php echo site_url($segmentsadd); ?>">Vasta</a>
+            <?php 
+            //}
+            if($this->auth->getUserId() == $row_item['user_id']){
+                $segmentsedit = array('main', 'editpost', $row_item['tid'], $row_item['post_id']);?>
+                <a style="padding-left: 10px;" href="<?php echo site_url($segmentsedit); ?>">Muuda</a>
+            <?php
+            }
         }
         ?>
      </h5>

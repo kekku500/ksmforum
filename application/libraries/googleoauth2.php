@@ -3,21 +3,21 @@
 
 class GoogleOAuth2{
     
-    //https://code.google.com/p/google-api-php-client/source/browse/trunk/examples/userinfo/index.php
-    //$plus_service = new Google_Service_Plus($client);
-    //return $plus_service->people->get('me')->getEmails()[0]->getValue();
-    
     private $CI;
     
-    private $google_uri = APPPATH.'third_party/google-api-php-client';
-    private $autoload_dir = '/src/Google/autoload.php';
-    private $client_secret_dir = '/files/client_secrets.json';
+    private $google_uri;
+    private $autoload_dir;
+    private $client_secret_dir;
     
     private $callback_url_segments;
     
     public function __construct() {
         $this->CI =& get_instance();
         
+		$this->google_uri = APPPATH.'third_party/google-api-php-client';
+		$this->autoload_dir = '/src/Google/autoload.php';
+		$this->client_secret_dir = '/files/client_secrets.json';
+		
         $this->CI->load->file($this->google_uri.$this->autoload_dir);
     }
     

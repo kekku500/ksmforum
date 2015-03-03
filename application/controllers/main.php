@@ -474,27 +474,32 @@ class Main extends CI_Controller {
 
         //form
         if($this->auth->isLoggedIn()){ 
-            if($this->multiform->is_form('addpost')){
-                
-                if($this->form_validation->run('addeditpost')){
-                    $this->post_model->addPost($tid, $pid, $this->input->post('content'));
-                    $segments = array('main', 'topic', $tid);
-
-                    redirect(site_url($segments));
-                } 
-            }
-            //show to post you are replying to
             $data['row_item'] =  $this->post_model->getPostJoinUser($pid);
-            $data['row_item']['depth'] = 0;
-            $this->template->body('topic/topic_content', $data);
-            
-            //language
-            $data['title'] = $this->lang->line('addpost_title');
-            $data['submit'] = $this->lang->line('addpost_button');
-            $data['content'] = $this->lang->line('addpost_content');
-            
-            $this->multiform->setForm('addpost');
-            $this->template->body('forms/post_form', $data);  
+            //if($this->auth->getUserId() != $data['row_item']['user_id']){
+                if($this->multiform->is_form('addpost')){
+
+                    if($this->form_validation->run('addeditpost')){
+                        $this->post_model->addPost($tid, $pid, $this->input->post('content'));
+                        $segments = array('main', 'topic', $tid);
+
+                        redirect(site_url($segments));
+                    } 
+                }
+                //show to post you are replying to
+
+                $data['row_item']['depth'] = 0;
+                $this->template->body('topic/topic_content', $data);
+
+                //language
+                $data['title'] = $this->lang->line('addpost_title');
+                $data['submit'] = $this->lang->line('addpost_button');
+                $data['content'] = $this->lang->line('addpost_content');
+
+                $this->multiform->setForm('addpost');
+                $this->template->body('forms/post_form', $data);  
+            //}else{
+            //    $this->template->body('errors/no_permission');
+            //}
         }else{
             $this->template->body('errors/no_permission');
         }
