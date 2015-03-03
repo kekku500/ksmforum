@@ -6,7 +6,7 @@ class MY_Form_validation extends CI_Form_validation {
       parent::__construct($config);
     }
     
-    function error_count(){
+    public function error_count(){
         return count($this->_error_array);
     }
     
