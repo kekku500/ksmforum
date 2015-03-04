@@ -10,7 +10,7 @@
 <?php
 // KOMMENTAARID
 foreach($posts as $post){?>
-    <div id='post_container' style="right: <?php echo -20*$post['depth']; ?>px;">
+    <div class='post_container' style="right: <?php echo -20*$post['depth']; ?>px;">
         <h5>
       <?php echo $post['post_edit_time'].' - user['.$post['user_name'].'] - id['.$post['post_id'].']'.' - parent['.$post['parent_post_id'].']'; 
             if ($this->auth->isLoggedIn()){

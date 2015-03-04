@@ -85,17 +85,17 @@
     padding-left: 10px;
 }
 
-#post_container {
+.post_container {
     border:1px solid;
     position: relative;
 }
 
-#post_container h5 {
+.post_container h5 {
     margin-top: 0px;
     padding-top: 0px;
 }
 
-#post_container h5 a {
+.post_container h5 a {
     padding-left: 10px;
     padding-top: 0px;
 }
