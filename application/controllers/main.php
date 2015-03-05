@@ -56,7 +56,7 @@ class Main extends CI_Controller {
 
         if($this->multiform->is_form('login')){
             if($this->form_validation->run('login') == false){
-		$this->template->postbody('re_loginpopup.php');
+		$this->template->postbody('javascript_calls/re_loginpopup.php');
 	    }
             //loogika on funcktioonis loginAttempt()
         }
@@ -75,9 +75,9 @@ class Main extends CI_Controller {
 
             if($userid){ //account found
                 $this->auth->login($userid);
-                redirect(current_url());
+                //redirect(current_url());
             }else{//account not found
-                $this->template->postbody('re_registergooglepopup.php');
+                $this->template->postbody('javascript_calls/re_registergooglepopup.php');
             }
         }
         
@@ -102,9 +102,10 @@ class Main extends CI_Controller {
     }
     
     public function loginAttempt(){
+        if(!$this->multiform->is_form('login'))
+            redirect(base_url());
         if($this->form_validation->error_count() > 0)
             return true; // kasutaja/parool valesti sisestatud, ära näita login failed errorit
-        
         $user = $this->input->post('user');
         $pass = $this->input->post('pass');
 
@@ -116,8 +117,6 @@ class Main extends CI_Controller {
         }
         return false;
     }
-
-
     
     public function oauth2callback($return_url_encoded = ''){
         $this->googleoauth2->callback($return_url_encoded);
@@ -165,6 +164,8 @@ class Main extends CI_Controller {
     }
     
     public function changePasswordCheck(){
+        if(!$this->multiform->is_form('change_password'))
+            redirect(base_url());
         $oldpass = $this->input->post('oldpass');
         $passState = $this->user_model->checkPassword($this->auth->getUserId(), $oldpass);
         if($passState == false)
@@ -243,7 +244,7 @@ class Main extends CI_Controller {
                 }
 
             }else{
-				$this->template->postbody('re_registerpopup.php');
+				$this->template->postbody('javascript_calls/re_registerpopup.php');
 			}
         }
         $this->multiform->setForm('register');
@@ -297,6 +298,14 @@ class Main extends CI_Controller {
     //foorumi vaade
     public function forum($fid){
         $forum = $this->forum_model->getForum($fid);
+        
+        if($forum == null){
+            $this->navigator();
+            $msg = $this->lang->line('error_no_such_forum');
+            $this->template->body('notifications/general', array('message' => $msg));
+            return;
+        }
+        
         $data['fid'] = $fid;
         
         $this->template->setTitle(sprintf($this->lang->line('forum_website_title'), $forum['name']));
@@ -334,9 +343,16 @@ class Main extends CI_Controller {
     
     //teema vaade, comments n shit
     public function topic($tid){
-        $this->viewed_topic($tid);       
-        
         $topic = $this->topic_model->getTopic($tid);
+        
+        if($topic == null){
+            $this->navigator();
+            $msg = $this->lang->line('error_no_such_topic');
+            $this->template->body('notifications/general', array('message' => $msg));
+            return;
+        }
+        
+        $this->viewed_topic($tid);       
         
         $this->navigator($topic['fid'], 
                 array(
@@ -347,30 +363,25 @@ class Main extends CI_Controller {
         $data['posts'] = $this->post_model->getPosts($tid);
                 
         $this->template->body('topic/posts_view', $data);
-        /*$data['topic'] = $this->topic_model->getTopic($tid);
-        $data['topic'] = $this->security->xss_clean($data['topic']);
-
-        $data['rows'] = $this->post_model->getPostsJoinUser($tid);
-
-        $this->template->body('topic/topic_header', $data);
-        foreach ($data['rows'] as $row_item){ 
-           
-            $row_item['content'] = $this->security->xss_clean($row_item['content']);
-            $data['row_item'] = $row_item;
-            $this->template->body('topic/topic_content', $data);
-        }*/
-
     }
     
     //teema lisamise vaade
     public function addtopic($fid){
+        $forum = $this->forum_model->getForum($fid);
+        if($forum == null){
+            $this->navigator();
+            $msg = $this->lang->line('error_no_such_forum');
+            $this->template->body('notifications/general', array('message' => $msg));
+            return;
+        }
+        
         $this->navigator($fid, 
                     array(
                         array('Lisa teema', current_url())
                     ));
         
         if($this->auth->isLoggedIn()){
-            if($this->input->post('form') == 'addtopic'){
+            if($this->multiform->is_form('addtopic')){
                 if($this->form_validation->run('addtopic')){
                     $topicdata = array(
                         'fid' => $fid,
@@ -389,7 +400,7 @@ class Main extends CI_Controller {
                     redirect(site_url($segments));
                 }
             }
-            $data['row_item'] =  $this->forum_model->getForum($fid);
+            $data['row_item'] =  $forum;
             $this->multiform->setForm('addtopic');
             $this->template->body('forms/addtopic_form', $data);  
         }else{
@@ -398,6 +409,8 @@ class Main extends CI_Controller {
     }
     
     public function addTopicCheck(){
+        if(!$this->multiform->is_form('addtopic'))
+            redirect(base_url());
         if($this->form_validation->error_count() > 0)
             return true; // 
         
@@ -413,6 +426,13 @@ class Main extends CI_Controller {
     //postituse lisamise vaade
     public function addpost($pid){
         $post =  $this->post_model->getPost($pid);
+        
+        if($post == null){
+            $this->navigator();
+            $msg = $this->lang->line('error_no_such_post');
+            $this->template->body('notifications/general', array('message' => $msg));
+            return;
+        }
         
         //nav
         $segments = array('main', 'topic', $post['topic_id']);
@@ -459,6 +479,13 @@ class Main extends CI_Controller {
     //postituse muutmise vaade
     public function editpost($pid){
         $post =  $this->post_model->getPost($pid);
+        
+        if($post == null){
+            $this->navigator();
+            $msg = $this->lang->line('error_no_such_post');
+            $this->template->body('notifications/general', array('message' => $msg));
+            return;
+        }
         
         //nav
         $segments = array('main', 'topic', $post['topic_id']);
@@ -512,6 +539,10 @@ class Main extends CI_Controller {
     
     public function delpost($pid){
         $post =  $this->post_model->getPost($pid);
+        
+        if($post == null)
+            redirect(base_url());
+        
         if(!$post['deleted']){
             if($this->auth->isLoggedIn() && $this->auth->getUserId() == $post['user_id']){     
                 $topic_deleted = $this->post_model->delPostRecursive($post);

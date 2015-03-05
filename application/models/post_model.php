@@ -79,7 +79,7 @@ class Post_model extends CI_Model {
      * väljad post_id, p_pid, tid, content, posts_edit_time,
      * depth, pos, user_id, name, usergroup, forum_id, forum_name
      * @param type $pid postituse id
-     * @return type array ühe elemendiga
+     * @return type array ühe elemendiga või null, kui kommentaari ei leitud
      */
     public function getPost($pid){
         $this->db->order_by("pos", "asc");
@@ -99,8 +99,11 @@ class Post_model extends CI_Model {
                 fid as forum_id,
                 posts.deleted as deleted');
         
-         $this->db->where('posts.id', $pid);
+        $this->db->where('posts.id', $pid);
         $query = $this->db->get($this->table);
+        
+        if($query->num_rows() == 0)
+            return null;
                 
         return $query->row_array();
     }

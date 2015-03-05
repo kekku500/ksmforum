@@ -86,7 +86,7 @@ class Forum_model extends CI_Model {
      * Päring:
      * 
      * @param type $fid foorumi id
-     * @return type ühe realine array
+     * @return type ühe realine array või null, kui foorumit ei leitud
      */
     public function getForum($fid){
         $this->db->select(
@@ -97,6 +97,8 @@ class Forum_model extends CI_Model {
             'post_count,');
         $this->db->where('id', $fid);
         $query = $this->db->get($this->table);
+        if($query->num_rows() == 0)
+            return null;
         return $query->row_array();
     }
     

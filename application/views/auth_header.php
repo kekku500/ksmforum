@@ -2,16 +2,16 @@
     <?php
     if(!$this->auth->isLoggedIn()){
     ?>
-        <a style="padding:5px" onclick="registerPopup()" href="#">Registreeri</a>
-        <a onclick="loginPopup()" style="padding:5px" href="#">Logi sisse</a>
+        <button onclick="registerPopup()"><?php echo $this->lang->line('button_register');?></button>
+        <button onclick="loginPopup()"><?php echo $this->lang->line('button_login');?></button>
     <?php
         if($this->googleoauth2->hasValidAccessToken()){?>
-            <a onclick="registerGooglePopup()" style="padding:5px" href="#">Registreeri Google</a>
+            <button onclick="registerGooglePopup()"><?php echo $this->lang->line('button_registergoogle');?></button>
     <?php
         }
     }else{
         ?>
-        Kasutaja: <strong><?php echo $user['name']; ?> </strong>
+        <?php echo $this->lang->line('auth_header_user');?> <strong><?php echo $user['name']; ?> </strong>
         <?php
         $segments = array('main', 'logout', base64_encode(current_url()));
         echo anchor(site_url($segments), 'Logi välja');

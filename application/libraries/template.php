@@ -12,7 +12,6 @@ class Template{
     private $scripts;
     private $body;
     
-    //private $prebody_calls = array();
     private $prebody;
     private $postbody;
     
@@ -32,7 +31,6 @@ class Template{
     }
     
     function prebody($view, $vars = array()){
-        //$this->prebody_calls[] = array($view, $vars);
         $this->prebody .= $this->ci->load->view($view, $vars, true);
     }
     
@@ -48,8 +46,6 @@ class Template{
         
         $vars['body'] = '';
         
-        //foreach($this->prebody_calls as $prebody)
-        //    $vars['body'] .= $this->ci->load->view($prebody[0], $prebody[1], true);
         $vars['body'] .= $this->prebody;
         $vars['body'] .= $this->body;
         $vars['body'] .= $this->postbody;

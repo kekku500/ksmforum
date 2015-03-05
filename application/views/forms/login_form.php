@@ -1,11 +1,12 @@
 <?php 
 $this->multiform->setForm('login');
-echo $this->multiform->form_error('loginAttempt_field'); 
 ?>
 <div id="login_cover" onClick="popupOff()"></div>
 <div id="login_form_outer">    
 	<div id="login_form_inner">
 		<?php
+                echo $this->multiform->form_error('loginAttempt_field'); 
+                
 		echo $this->multiform->form_open(current_url()); 
 		?>
 		

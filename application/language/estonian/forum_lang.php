@@ -8,6 +8,12 @@ $lang['forum_header_topics'] = 'Teemasid';
 
 $lang['subforum_header_name'] = '%s alamfoorumid';
 
+$lang['button_login'] = "Logi sisse";
+$lang['button_register'] = "Registreeri";
+$lang['button_registergoogle'] = "Registreeri läbi Google";
+
+$lang['auth_header_user'] = 'Kasutaja:';
+
 $lang['topic_header_name'] = '%s teemad';
 $lang['topic_header_views'] = 'Vaatamisi';
 $lang['topic_header_post_count'] = 'Kommentaare';
@@ -63,3 +69,8 @@ $lang['post_anchor_add'] = 'Vasta';
 $lang['post_anchor_edit'] = 'Muuda';
 $lang['post_anchor_del'] = 'Kustuta';
 $lang['post_deleted_content'] = '!Kustutatud!';
+
+
+$lang['error_no_such_topic'] = "Vastavat teemat pole olemas!";
+$lang['error_no_such_forum'] = "Vastavat foorumit pole olemas!";
+$lang['error_no_such_post'] = "Vastavat kommentaari pole olemas!";

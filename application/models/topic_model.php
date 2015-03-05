@@ -45,10 +45,12 @@ class Topic_model extends CI_Model {
     
     /**
      * @param type $tid teema id
-     * @return type ühe realine array()
+     * @return type ühe realine array() või null, kui teemat ei leitud
      */
     public function getTopic($tid){
         $query = $this->db->get_where($this->table, array('id' => $tid));
+        if($query->num_rows() == 0)
+            return null;
         return $query->row_array();
     }
     
