@@ -13,7 +13,7 @@ foreach($posts as $post){?>
     <div class='post_container' style="right: <?php echo -20*$post['depth']; ?>px;">
         <h5>
       <?php echo $post['post_edit_time'].' - user['.$post['user_name'].'] - id['.$post['post_id'].']'.' - parent['.$post['parent_post_id'].']'; 
-            if ($this->auth->isLoggedIn()){
+            if ($this->auth->isLoggedIn() && !$post['deleted']){
                 //if($this->auth->getUserId() != $post['user_id']){ //kui praegune kasutaja ei loonud seda kommentaari
                     $segmentsadd = array('main', 'addpost', $post['post_id']);?>
                     <a href="<?php echo site_url($segmentsadd); ?>"><?php echo $this->lang->line('post_anchor_add'); ?></a><?php 
@@ -22,10 +22,9 @@ foreach($posts as $post){?>
                     $segmentsedit = array('main', 'editpost', $post['post_id']);?>
                     <a href="<?php echo site_url($segmentsedit); ?>"><?php echo $this->lang->line('post_anchor_edit'); ?></a>
                 <?php
-                    if(!$post['deleted']){
-                        $segmentsdel = array('main', 'delpost', $post['post_id']);?>
-                        <a href="<?php echo site_url($segmentsdel); ?>"><?php echo $this->lang->line('post_anchor_del'); ?></a>
-              <?php }
+                    $segmentsdel = array('main', 'delpost', $post['post_id']);?>
+                    <a href="<?php echo site_url($segmentsdel); ?>"><?php echo $this->lang->line('post_anchor_del'); ?></a>
+              <?php
                 }
             }
             ?>

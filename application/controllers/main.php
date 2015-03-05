@@ -427,7 +427,7 @@ class Main extends CI_Controller {
     public function addpost($pid){
         $post =  $this->post_model->getPost($pid);
         
-        if($post == null){
+        if($post == null || $post['deleted']){
             $this->navigator();
             $msg = $this->lang->line('error_no_such_post');
             $this->template->body('notifications/general', array('message' => $msg));
@@ -480,7 +480,7 @@ class Main extends CI_Controller {
     public function editpost($pid){
         $post =  $this->post_model->getPost($pid);
         
-        if($post == null){
+        if($post == null || $post['deleted']){
             $this->navigator();
             $msg = $this->lang->line('error_no_such_post');
             $this->template->body('notifications/general', array('message' => $msg));
@@ -540,23 +540,18 @@ class Main extends CI_Controller {
     public function delpost($pid){
         $post =  $this->post_model->getPost($pid);
         
-        if($post == null)
+        if($post == null || $post['deleted'])
             redirect(base_url());
         
-        if(!$post['deleted']){
-            if($this->auth->isLoggedIn() && $this->auth->getUserId() == $post['user_id']){     
-                $topic_deleted = $this->post_model->delPostRecursive($post);
-                if($topic_deleted)
-                   redirect(site_url(array('main', 'forum', $post['forum_id'])));
-                else
-                   redirect(site_url(array('main', 'topic', $post['topic_id'])));  
-            }else{
-                $this->template->body('errors/no_permission');
-            }
+        if($this->auth->isLoggedIn() && $this->auth->getUserId() == $post['user_id']){     
+            $topic_deleted = $this->post_model->delPostRecursive($post);
+            if($topic_deleted)
+               redirect(site_url(array('main', 'forum', $post['forum_id'])));
+            else
+               redirect(site_url(array('main', 'topic', $post['topic_id'])));  
         }else{
-            //postitust ei eksisteeri, error
+            $this->template->body('errors/no_permission');
         }
-
     }
     
     
