@@ -411,14 +411,14 @@ class Main extends CI_Controller {
     }
     
     //postituse lisamise vaade
-    public function addpost($tid, $pid){
-        $topic = $this->topic_model->getTopic($tid);
+    public function addpost($pid){
+        $post =  $this->post_model->getPost($pid);
         
         //nav
-        $segments = array('main', 'topic', $topic['id']);
-        $this->navigator($topic['fid'], 
+        $segments = array('main', 'topic', $post['topic_id']);
+        $this->navigator($post['forum_id'], 
             array(
-                array($topic['name'], site_url($segments)),
+                array($post['topic_name'], site_url($segments)),
                 array('Lisa kommentaar', current_url())
             ));
 
@@ -429,16 +429,15 @@ class Main extends CI_Controller {
                 if($this->multiform->is_form('addpost')){
 
                     if($this->form_validation->run('addeditpost')){
-                        $this->post_model->addPost($tid, $pid, $this->input->post('content'));
-                        $segments = array('main', 'topic', $tid);
+                        $this->post_model->addPost($post['topic_id'], $pid, $this->input->post('content'));
+                        $segments = array('main', 'topic', $post['topic_id']);
 
                         redirect(site_url($segments));
                     } 
                 }
-                $data['posts'][0] =  $this->post_model->getPost($pid);
+                $data['posts'][0] =  $post;
                 $data['posts'][0]['depth'] = 0;
-                $data['topic'] = $topic;
-                
+                $data['topic'] = array('id' => $post['topic_id'], 'name' => $post['topic_name']);
                 $this->template->body('topic/posts_view', $data);
 
                 //language
@@ -458,20 +457,19 @@ class Main extends CI_Controller {
     }
     
     //postituse muutmise vaade
-    public function editpost($tid, $pid){
-        $topic = $this->topic_model->getTopic($tid);
+    public function editpost($pid){
+        $post =  $this->post_model->getPost($pid);
         
         //nav
-        $segments = array('main', 'topic', $topic['id']);
-        $this->navigator($topic['fid'], 
+        $segments = array('main', 'topic', $post['topic_id']);
+        $this->navigator($post['forum_id'], 
             array(
-                array($topic['name'], site_url($segments)),
+                array($post['topic_name'], site_url($segments)),
                 array('Muuda kommentaari', current_url())
             ));
         
         //edit post form
         if($this->auth->isLoggedIn()){     
-            $post =  $this->post_model->getPost($pid);
             $uid = $post['user_id'];
             
             //kas autor muudab postitust?
@@ -480,9 +478,9 @@ class Main extends CI_Controller {
                     
                     //postitame ja lähme teemasse tagasi
                     if($this->form_validation->run('addeditpost')){
-                        $this->post_model->editPost($pid, $this->input->post('content'));
+                        $this->post_model->editPost($pid, array('content' => $this->input->post('content')));
 
-                        $segments = array('main', 'topic', $tid);
+                        $segments = array('main', 'topic', $post['topic_id']);
 
                         redirect(site_url($segments));
                     } 
@@ -491,7 +489,7 @@ class Main extends CI_Controller {
                 //näita muudetavat postitust
                 $data['posts'][0] =  $post;
                 $data['posts'][0]['depth'] = 0;
-                $data['topic'] = $topic;
+                $data['topic'] = array('id' => $post['topic_id'], 'name' => $post['topic_name']);
                 $this->template->body('topic/posts_view', $data);
                 
                 //lang
@@ -508,6 +506,24 @@ class Main extends CI_Controller {
  
         }else{
             $this->template->body('errors/no_permission');
+        }
+
+    }
+    
+    public function delpost($pid){
+        $post =  $this->post_model->getPost($pid);
+        if(!$post['deleted']){
+            if($this->auth->isLoggedIn() && $this->auth->getUserId() == $post['user_id']){     
+                $topic_deleted = $this->post_model->delPostRecursive($post);
+                if($topic_deleted)
+                   redirect(site_url(array('main', 'forum', $post['forum_id'])));
+                else
+                   redirect(site_url(array('main', 'topic', $post['topic_id'])));  
+            }else{
+                $this->template->body('errors/no_permission');
+            }
+        }else{
+            //postitust ei eksisteeri, error
         }
 
     }

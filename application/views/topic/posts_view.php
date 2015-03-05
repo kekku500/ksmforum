@@ -2,7 +2,7 @@
 /*
 * $topic := Array([id], [name])
 * $posts elemendid := Array([post_id], [parent_post_id], [content], 
- * [post_edit_time], [depth], [position[,[user_id], [user_name])
+* [post_edit_time], [depth], [position[,[user_id], [user_name], [deleted])
 */
 
 // TIITEL?>
@@ -15,19 +15,33 @@ foreach($posts as $post){?>
       <?php echo $post['post_edit_time'].' - user['.$post['user_name'].'] - id['.$post['post_id'].']'.' - parent['.$post['parent_post_id'].']'; 
             if ($this->auth->isLoggedIn()){
                 //if($this->auth->getUserId() != $post['user_id']){ //kui praegune kasutaja ei loonud seda kommentaari
-                    $segmentsadd = array('main', 'addpost', $topic['id'], $post['post_id']);?>
+                    $segmentsadd = array('main', 'addpost', $post['post_id']);?>
                     <a href="<?php echo site_url($segmentsadd); ?>"><?php echo $this->lang->line('post_anchor_add'); ?></a><?php 
                 //}
-                if($this->auth->getUserId() == $post['user_id']){ //looja saab kommentaari muuta
-                    $segmentsedit = array('main', 'editpost', $topic['id'], $post['post_id']);?>
+                if($this->auth->getUserId() == $post['user_id']){ //looja saab kommentaari muuta ja kustutada
+                    $segmentsedit = array('main', 'editpost', $post['post_id']);?>
                     <a href="<?php echo site_url($segmentsedit); ?>"><?php echo $this->lang->line('post_anchor_edit'); ?></a>
                 <?php
+                    if(!$post['deleted']){
+                        $segmentsdel = array('main', 'delpost', $post['post_id']);?>
+                        <a href="<?php echo site_url($segmentsdel); ?>"><?php echo $this->lang->line('post_anchor_del'); ?></a>
+              <?php }
                 }
             }
             ?>
         </h5>
         
-        <p><?php echo $this->security->xss_clean($post['content']); ?></p>
+        <p>
+            <?php 
+            if($post['deleted']){
+                echo $this->lang->line('post_deleted_content');
+            }else{
+                echo $this->security->xss_clean($post['content']); 
+            }
+            
+            
+            ?>
+        </p>
     </div>
 <?php
 }?>

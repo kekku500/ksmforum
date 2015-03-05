@@ -90,7 +90,7 @@ class Topic_model extends CI_Model {
       
     //TODO
     public function delTopic($tid){
-        
+        $this->db->delete($this->table, array('id' => $tid));
     }
     
 }

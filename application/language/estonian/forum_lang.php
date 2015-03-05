@@ -61,3 +61,5 @@ $lang['footer_visitors'] = 'Külastajaid lehel: %s';
 
 $lang['post_anchor_add'] = 'Vasta';
 $lang['post_anchor_edit'] = 'Muuda';
+$lang['post_anchor_del'] = 'Kustuta';
+$lang['post_deleted_content'] = '!Kustutatud!';
