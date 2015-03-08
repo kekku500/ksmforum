@@ -643,3 +643,107 @@ h3#reply-title {
 
 /* KUI KÕIK ON TEHTUD, SIIS SIIA LISADA TABLETS & PHONES !! */
 
+
+/* KÕIK, MIS KEVINI POOLT JUBA TEHTUD OLI! */
+
+* {
+
+ margin: 0px;
+ padding: 0px;
+
+}
+
+#login_form_outer {
+	position:absolute;
+	display: none;
+	left: 50%;
+	top: 10%;
+	z-index: 2;
+}
+
+#login_form_inner {
+	background-color: #E6E6E6;
+    border:5px solid #000000;
+	position: relative;
+	left: -50%;
+}
+
+#login_cover {
+	width: 100%;
+	height: 100%;
+	background: #000000;
+	opacity: 0.5;
+	display: none;
+	position: absolute;
+	z-index: 1;
+}
+
+#register_form_outer {
+	position:absolute;
+	display: none;
+	left: 50%;
+	top: 10%;
+	z-index: 2;
+}
+
+#register_form_inner {
+	background-color: #E6E6E6;
+        border:5px solid #000000;
+	position: relative;
+	left: -50%;
+}
+
+#registergoogle_form_outer {
+	position:absolute;
+	display: none;
+	left: 50%;
+	top: 10%;
+	z-index: 2;
+}
+
+#registergoogle_form_inner {
+	background-color: #E6E6E6;
+        border:5px solid #000000;
+	position: relative;
+	left: -50%;
+}
+
+
+#auth_header {
+    border:1px solid blue;
+    text-align:center;
+    display: inline-block;
+    padding:2px;
+}
+
+.forum_table, th, td {
+    border:1px solid black;
+    width: 80%;
+}
+
+.forum_table {
+    width:50%;
+}
+
+.forum_table td {
+    text-align: center;
+}
+
+.add_topic_link {
+    padding-left: 10px;
+}
+
+.post_container {
+    border:1px solid;
+    position: relative;
+}
+
+.post_container h5 {
+    margin-top: 0px;
+    padding-top: 0px;
+}
+
+.post_container h5 a {
+    padding-left: 10px;
+    padding-top: 0px;
+}
