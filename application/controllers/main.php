@@ -6,7 +6,7 @@ class Main extends CI_Controller {
     public function __construct() {
         parent::__construct();
 
-        $this->load->library(array('multiform', 'form_validation', 'googleoauth2'));
+        $this->load->library(array('multiform', 'form_validation', 'googleoauth2', 'spamblocker'));
         $this->load->model(array('topic_model', 'post_model', 'forum_model', 'user_model', 'session_model'));
         $this->load->helper(array('url','date', 'form')); 
 		
@@ -19,7 +19,12 @@ class Main extends CI_Controller {
         $this->lang->load('forum');
         
         $this->template->addJS('assets/js/jquery-1.11.2.min.js');
-	$this->template->addJS('assets/js/main.js');
+
+        $this->template->addJS('assets/js/bootstrap.min.js');
+        $this->template->addCSS('assets/css/bootstrap.css');
+        $this->template->addCSS('assets/css/bootstrap-theme.css');
+        
+        $this->template->addJS('assets/js/main.js');
         $this->template->addCSS('assets/css/main.css');
         $this->template->addCSS_Noscript('assets/css/main_noscript.css');
 		
@@ -341,8 +346,7 @@ class Main extends CI_Controller {
         }
     }
     
-    //teema vaade, comments n shit
-    public function topic($tid){
+    public function topic($tid, $page = 1, $root_post_id = null){
         $topic = $this->topic_model->getTopic($tid);
         
         if($topic == null){
@@ -352,21 +356,45 @@ class Main extends CI_Controller {
             return;
         }
         
+        
+        
+        if($root_post_id == null){
+            $root_post_id = $this->post_model->getRootPost($tid)['post_id'];  
+            $data['topic_root_post_id'] = $root_post_id;
+        }else{
+            if($this->post_model->getPost($root_post_id) == null)
+                redirect(base_url(array('main', 'topic', $tid)));
+            $data['topic_root_post_id'] = $this->post_model->getRootPost($tid)['post_id'];
+        }
+        
+        
         $this->viewed_topic($tid);       
         
         $this->navigator($topic['fid'], 
                 array(
                     array($topic['name'], current_url())
                 ));
+            
         
         $data['topic'] = $topic;
-        $data['posts'] = $this->post_model->getPosts($tid);
-                
-        $this->template->body('topic/posts_view', $data);
+        $data['posts'] = $this->post_model->getPostsPaginated($root_post_id, $page);
+        
+        
+        $data['post'] = $data['posts'][0];
+        $this->template->body('topic/root_post', $data);
+        $data['response_disabled'] = false;      
+        $this->template->body('topic/posts_subset_view', $data);
+        
+        $reply_count = $this->post_model->getPostReplyCount($root_post_id);
+        $data['next_page_valid'] = ($this->config->item('max_post_count')*$page < $reply_count);
+        $data['root_post'] = array('post_id' => $root_post_id);
+        $data['cur_page'] = $page;
+        $this->template->body('topic/posts_bot_nav', $data);
     }
     
     //teema lisamise vaade
     public function addtopic($fid){
+        $this->spamblocker->check('addtopic', now(), 0.1);
         $forum = $this->forum_model->getForum($fid);
         if($forum == null){
             $this->navigator();
@@ -424,7 +452,8 @@ class Main extends CI_Controller {
     }
     
     //postituse lisamise vaade
-    public function addpost($pid){
+    public function addpost($pid, $url){
+        $this->spamblocker->check('addpost', now(), 0.1);
         $post =  $this->post_model->getPost($pid);
         
         if($post == null || $post['deleted']){
@@ -447,14 +476,13 @@ class Main extends CI_Controller {
             
             //if($this->auth->getUserId() != $data['row_item']['user_id']){
                 if($this->multiform->is_form('addpost')){
-
+                    
                     if($this->form_validation->run('addeditpost')){
                         $this->post_model->addPost($post['topic_id'], $pid, $this->input->post('content'));
-                        $segments = array('main', 'topic', $post['topic_id']);
-
-                        redirect(site_url($segments));
+                        redirect(base64_decode($url));
                     } 
                 }
+                $data['response_disabled'] = true;
                 $data['posts'][0] =  $post;
                 $data['posts'][0]['depth'] = 0;
                 $data['topic'] = array('id' => $post['topic_id'], 'name' => $post['topic_name']);
@@ -477,7 +505,7 @@ class Main extends CI_Controller {
     }
     
     //postituse muutmise vaade
-    public function editpost($pid){
+    public function editpost($pid, $url){
         $post =  $this->post_model->getPost($pid);
         
         if($post == null || $post['deleted']){
@@ -507,9 +535,7 @@ class Main extends CI_Controller {
                     if($this->form_validation->run('addeditpost')){
                         $this->post_model->editPost($pid, array('content' => $this->input->post('content')));
 
-                        $segments = array('main', 'topic', $post['topic_id']);
-
-                        redirect(site_url($segments));
+                        redirect(base64_decode($url));
                     } 
                 }
                 
@@ -537,7 +563,7 @@ class Main extends CI_Controller {
 
     }
     
-    public function delpost($pid){
+    public function delpost($pid, $url){
         $post =  $this->post_model->getPost($pid);
         
         if($post == null || $post['deleted'])
@@ -548,7 +574,7 @@ class Main extends CI_Controller {
             if($topic_deleted)
                redirect(site_url(array('main', 'forum', $post['forum_id'])));
             else
-               redirect(site_url(array('main', 'topic', $post['topic_id'])));  
+               redirect(base64_decode($url));  
         }else{
             $this->template->body('errors/no_permission');
         }

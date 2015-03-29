@@ -47,6 +47,7 @@ class Post_model extends CI_Model {
         
         return $res[0];
     }
+    
     /**
      * KEY JOIN-ib posts ja user tabelid ning tagastab
      * väljad post_id, p_pid, tid, content, posts_edit_time,
@@ -75,13 +76,84 @@ class Post_model extends CI_Model {
     }
     
     /**
-     * JOIN-ib posts, users ja topic tabelid ning tagastab
-     * väljad post_id, p_pid, tid, content, posts_edit_time,
-     * depth, pos, user_id, name, usergroup, forum_id, forum_name
-     * @param type $pid postituse id
-     * @return type array ühe elemendiga või null, kui kommentaari ei leitud
+     * Seaded: posts.php
+     * @param type $root_post_id - Kommentaari id, mis on juureks
+     * @param type $page_nr - Milline osa vastustest kuvada
+     * @return type kommentaarid
      */
-    public function getPost($pid){
+    public function getPostsPaginated($root_post_id, $page_nr = 1){
+        if(!(ctype_digit($root_post_id) || is_int($root_post_id)) || !(ctype_digit($page_nr) || is_int($page_nr)))
+            return;
+        $this->config->load('posts');
+        //dont even ask
+        $query_string = "select 
+                            h3.id as post_id,
+                            h3.p_pid as parent_post_id,
+                            content,
+                            h3.edit_time as post_edit_time,
+                            depth,
+                            pos as position,
+                            users.id as user_id,
+                            name as user_name,
+                            h3.deleted as deleted
+                        from 
+                            (select *,
+                                @num := if(@type = p_pid, @num + 1, 1) type_counter, 
+                                @type := p_pid cur_type
+                            from
+                                (select posts.*, root_depth, root_pos,
+                                    (@a:=IF(depth = (root_depth+1), 1, 0)+@a) post_count,
+                                    (@b:=IF(pos > root_pos and depth <= root_depth, 0, @b)) valid,
+                                    IF(depth >= root_depth+6, concat(p_pid, depth), id) as groupit,
+                                    @num := 0, 
+                                    @type := ''
+                                from posts, 
+                                    (select @a := 0, @b := 1, depth root_depth, tid root_tid, pos root_pos from posts where id=".$root_post_id.") h1
+                                where 
+                                    posts.tid = root_tid and 
+                                    posts.pos >= root_pos
+                                order by posts.pos asc) h2 
+                            where valid = 1 and (post_count = 0 OR 
+                                post_count between 
+                                ".(($page_nr-1)*$this->config->item('max_post_count')+1)." and
+                                ".($page_nr*$this->config->item('max_post_count')).") and
+                                depth <= root_depth+".($this->config->item('max_post_depth')+1)."
+                            order by h2.p_pid asc) h3
+                        join users on users.id = h3.uid
+                        where type_counter <= IF(depth-root_depth>0, ".$this->config->item('max_post_count')."/(depth-root_depth), ".$this->config->item('max_post_count').")+1
+                        group by groupit
+                        order by h3.pos asc";
+       
+        $query = $this->db->query($query_string);
+        
+        return $query->result_array();
+    }
+    
+    
+    public function getPostReplyCount($post_id){
+        $this->db->select("count(*) as amount");
+        
+        $this->db->where(array('p_pid' => $post_id));
+        
+        $query = $this->db->get($this->table);
+        
+        return $query->row_array()['amount'];
+    }
+    
+    public function getRootPost($tid){
+        $this->db->select("posts.id as post_id");
+        
+        $this->db->where(array(
+            'tid' => $tid,
+            'p_pid' => null
+                ));
+        
+        $query = $this->db->get($this->table, 1);
+        
+        return $query->row_array();
+    }
+    
+        public function getPost($pid){
         $this->db->order_by("pos", "asc");
         $this->db->join($this->users, $this->users.'.id = '.$this->table.'.uid');
         $this->db->join($this->topics, $this->topics.'.id = '.$this->table.'.tid');
@@ -107,6 +179,7 @@ class Post_model extends CI_Model {
                 
         return $query->row_array();
     }
+
     
     /**
      * 
@@ -189,7 +262,7 @@ class Post_model extends CI_Model {
                         return true;
                     }
             }else{
-               $this->topic_model->delTopic($post['topic_id']);
+                $this->topic_model->delTopic($post['topic_id']);
                 return true;
             }
         }else{

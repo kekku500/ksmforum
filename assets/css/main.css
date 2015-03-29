@@ -5,9 +5,9 @@
 	Tags: värv1, värv2, 3-realine (värvid pole veel valitud, värvid kasutatud antud failis on näidise eesmärgiks.)
 
 */
-
+/*
 body {
-	background: #000000 url(background.jpg) center top no-repeat; /* FIX ALL IMAGE PATHS! */
+	background: #000000 url(background.jpg) center top no-repeat; // FIX ALL IMAGE PATHS! 
 	color: #C8C7C7;
 }
 
@@ -29,8 +29,8 @@ a:focus {
     outline: none;
 }
 
-/* -----------------------------------------------------------------------------------
-------------------------------------------------------------------------------------- */
+// -----------------------------------------------------------------------------------
+// ------------------------------------------------------------------------------------- 
 
 
 #container {
@@ -40,12 +40,12 @@ a:focus {
 
 #main {
 	padding: 15px;	
-    background: url(images/main-back.png); /* LISA MAIN-BACKGROUND PILT */
+    background: url(images/main-back.png); // LISA MAIN-BACKGROUND PILT 
 }
 
 #main-fullwidth {
     padding: 15px;
-    background: url(images/main-back.png); /* LISA MAIN-BACKGROUND PILT */
+    background: url(images/main-back.png); // LISA MAIN-BACKGROUND PILT 
 }
 
 #content {
@@ -55,25 +55,25 @@ a:focus {
     margin-left: 235px;
 }
 
-/* ---------------------------------------------------------------------------------------
-------- 			ÄÄRISED !!               ------------------------------ */
+// ---------------------------------------------------------------------------------------
+// ------- 			ÄÄRISED !!               ------------------------------ 
 
-#sidebar-primary { /* primary aka vasak */
+#sidebar-primary { // primary aka vasak 
     overflow: hidden;
 	float: left;
-    width: 220px; /* 235 margin - 15px padding */
-    margin-left: -695px; /* 460+235 excludes padding */
+    width: 220px; // 235 margin - 15px padding 
+    margin-left: -695px; // 460+235 excludes padding 
 }
 
-#sidebar-secondary { /* secondary aka parem */
+#sidebar-secondary { // secondary aka parem 
     overflow: hidden;
 	float: right;
-    width: 220px; /* 235 margin - 15px padding */
-    margin-left: 15px; /* padding from side */
+    width: 220px; // 235 margin - 15px padding 
+    margin-left: 15px; // padding from side 
 }
 
-/* -----------------------------------------------------------------------------------
-------------------------------------------------------------------------------------- */
+// -----------------------------------------------------------------------------------
+// ------------------------------------------------------------------------------------- 
 
 #header {
     height: 60px;
@@ -99,16 +99,16 @@ a:focus {
 }
 
 .logo h1.site_title a, .logo h1.site_title a:hover {
-    color: #FFFFFF; /* black */
+    color: #FFFFFF; // black 
     text-decoration: none;
 }
 
 
-/* -------------------------------------------------------------------------------------
-------------------------------------------------------------------------------------- */
-/* ---------------------	 	MENÜÜ	       	----------------------------- */
-/* -------------------------------------------------------------------------------------
-------------------------------------------------------------------------------------- */
+// -------------------------------------------------------------------------------------
+//------------------------------------------------------------------------------------- 
+// ---------------------	 	MENÜÜ	       	----------------------------- 
+// -------------------------------------------------------------------------------------
+//------------------------------------------------------------------------------------- 
 
 
 .menu-primary-container {
@@ -128,7 +128,7 @@ a:focus {
 }
 
 
-/* Peamine/ nr. 1 menüü */
+// Peamine/ nr. 1 menüü 
 
 .menu-primary li a {
     color: #FFFFFF;
@@ -149,12 +149,12 @@ a:focus {
 
 
 
-/* Menüüception aka menüü in menüü aka alafoorum */
+// Menüüception aka menüü in menüü aka alafoorum 
 
 .menu-primary li li a {
 	color: #fff;
     text-transform: none;
-    background: url(images/menu-primary-cl-bg.png); /* Mõtle välja mingi lambine pilt vms, mida alafoorumis kasutada. Mitte sama nagu pealehel.*/
+    background: url(images/menu-primary-cl-bg.png); // Mõtle välja mingi lambine pilt vms, mida alafoorumis kasutada. Mitte sama nagu pealehel.
     padding: 10px 15px;
     margin: 0;
     border: 0;
@@ -164,27 +164,27 @@ a:focus {
 .menu-primary li li a:hover, .menu-primary li li a:active, .menu-primary li li a:focus, 
 .menu-primary li li:hover > a, .menu-primary li li.current-cat > a, .menu-primary li li.current_page_item > a, .menu-primary li li.current-menu-item > a {
 	color: #fff;
-    background: url(images/menu-primary-cl-hover.png); /* Mõtle välja mingi lambine pilt vms, mida alafoorumis kasutada. Mitte sama nagu pealehel.*/
+    background: url(images/menu-primary-cl-hover.png); // Mõtle välja mingi lambine pilt vms, mida alafoorumis kasutada. Mitte sama nagu pealehel.
     outline: 0;
     border-bottom:0;
     text-decoration: none;
 }
 
-/* Everest soovitas arrows & shadows primary'sid. Undecisive. */
+// Everest soovitas arrows & shadows primary'sid. Undecisive. 
 
 
-/* -------------------------------------------------------------------------------------
-------------------------------------------------------------------------------------- */
+// -------------------------------------------------------------------------------------
+//------------------------------------------------------------------------------------- 
 
-/* SECONDARY / nr. 2 menüü -------------------- SISULISELT SAMA KUI ESIMENE ! ------ * /
+// SECONDARY / nr. 2 menüü -------------------- SISULISELT SAMA KUI ESIMENE ! ------ 
 
-/* -------------------------------------------------------------------------------------
-------------------------------------------------------------------------------------- */
+// -------------------------------------------------------------------------------------
+//------------------------------------------------------------------------------------- 
 .menu-secondary-container {
     position:relative;
     height: 44px;
     z-index: 300;
-    background: url(images/menu-secondary-bg.png) left top repeat-x; /* Need of image again. */
+    background: url(images/menu-secondary-bg.png) left top repeat-x; // Need of image again. 
 }
 
 .menu-secondary {}
@@ -206,12 +206,12 @@ a:focus {
 .menu-secondary li a:hover, .menu-secondary li a:active, .menu-secondary li a:focus, 
 .menu-secondary li:hover > a, .menu-secondary li.current-cat > a, .menu-secondary li.current_page_item > a, .menu-secondary li.current-menu-item > a {
     color: #fff;
-    background: url(images/menu-secondary-bg.png) left top repeat-x; /* IMAGE! */
+    background: url(images/menu-secondary-bg.png) left top repeat-x; // IMAGE! 
     outline: 0;
-    text-shadow: 0 1px 0 #004373; /* Efektiivsem lugeda slightly. */
+    text-shadow: 0 1px 0 #004373; // Efektiivsem lugeda slightly. 
 }
 
-/* Menüüception aka menüü in menüü aka alafoorum */
+// Menüüception aka menüü in menüü aka alafoorum 
 
 .menu-secondary li li a {
 	color: #fff;
@@ -231,19 +231,19 @@ a:focus {
 }
 
 
-/* ARROWS & SHADOWS SECONDARY MENÜÜ <-- Everest suggested, järgmiseks etapiks vaja aru saada, mida need teevad. */
+// ARROWS & SHADOWS SECONDARY MENÜÜ <-- Everest suggested, järgmiseks etapiks vaja aru saada, mida need teevad. 
 
-/* -------------------------------------------------------------------------------------
-------------------------------------------------------------------------------------- */
-/* -------------- 	END		OF		MENÜÜ	--------------------- */
-/* -------------------------------------------------------------------------------------
-------------------------------------------------------------------------------------- */
+// -------------------------------------------------------------------------------------
+// ------------------------------------------------------------------------------------- 
+// -------------- 	END		OF		MENÜÜ	--------------------- 
+// -------------------------------------------------------------------------------------
+// ------------------------------------------------------------------------------------- 
 
 
 
-/* -------------------------------------------------------------------------------------------
-------------------------- 		POSTITUSED		------------------------------ 
-------------------------------------------------------------------------------------------- */
+// -------------------------------------------------------------------------------------------
+// ------------------------- 		POSTITUSED		------------------------------ 
+// ------------------------------------------------------------------------------------------- 
 
 .post {
     margin-bottom: 15px;
@@ -266,12 +266,12 @@ a:focus {
 }
 
 .title a {
-    color: #DBDBDB; /* Hall */
+    color: #DBDBDB; // Hall 
     text-decoration: none;
 }
 
 .title a:hover {
-    color: #3B8EC7; /* Navy blue */
+    color: #3B8EC7; // Navy blue 
     text-decoration: none;
 }
 
@@ -297,11 +297,11 @@ a:focus {
 }
 
 
-/* Suggested: Post Meta, Read More etc */
+// Suggested: Post Meta, Read More etc 
 
-/* ------------------------------------------------------------------------------------------------------
-------------------------- 			JALUS			---------------------------------
------------------------------------------------------------------------------------------------------- */
+// ------------------------------------------------------------------------------------------------------
+// ------------------------- 			JALUS			---------------------------------
+// ------------------------------------------------------------------------------------------------------ 
 
 #footer-container {
 }
@@ -344,7 +344,7 @@ a:focus {
     color: #B7B7B7;
 }
 
-/* --------------------------------- SEARCH BAR! -------------------------------------- */
+// --------------------------------- SEARCH BAR! -------------------------------------- 
 
 #search {
     border: 1px solid #2E2E2E;
@@ -376,17 +376,17 @@ a:focus {
     width: 220px;
 }
 
-/* WIDGETS & BANNERS NEED TO BE ADDED! */
-/* WIDGETS & BANNERS NEED TO BE ADDED! */
-/* WIDGETS & BANNERS NEED TO BE ADDED! */
-/* WIDGETS & BANNERS NEED TO BE ADDED! */
-/* WIDGETS & BANNERS NEED TO BE ADDED! */
-/* WIDGETS & BANNERS NEED TO BE ADDED! */
+// WIDGETS & BANNERS NEED TO BE ADDED! 
+// WIDGETS & BANNERS NEED TO BE ADDED! 
+// WIDGETS & BANNERS NEED TO BE ADDED! 
+// WIDGETS & BANNERS NEED TO BE ADDED! 
+// WIDGETS & BANNERS NEED TO BE ADDED! 
+// WIDGETS & BANNERS NEED TO BE ADDED! 
 
 
-/* -------------------------------  -------------------------------  ------------------------------- */
-/* -------------------------------------   KOMMENTEERIMINE  ------------------------------------- !! */
-/* -------------------------------  -------------------------------  ------------------------------- */
+// -------------------------------  -------------------------------  ------------------------------- 
+// -------------------------------------   KOMMENTEERIMINE  ------------------------------------- !! 
+// -------------------------------  -------------------------------  ------------------------------- 
 
 #comments {
     margin-bottom: 15px;
@@ -499,9 +499,9 @@ h3#comments-title {
     margin: 0;
 }
 
-/* -------------------------------  -------------------------------  ------------------------------- */
-/* ------------------------------------------ REPLIES ---------------------------------------------- */
-/* -------------------------------  -------------------------------  ------------------------------- */
+// -------------------------------  -------------------------------  ------------------------------- 
+// ------------------------------------------ REPLIES ---------------------------------------------- 
+// -------------------------------  -------------------------------  ------------------------------- 
 
 .commentlist .children li {
     border: none;
@@ -533,9 +533,9 @@ h3#comments-title {
     font-size: 13px;
 }
 
-/* -------------------------------  -------------------------------  ------------------------------- */
-/* ------------------------------------------ RESPONDS --------------------------------------------- */
-/* -------------------------------  -------------------------------  ------------------------------- */
+// -------------------------------  -------------------------------  ------------------------------- 
+// ------------------------------------------ RESPONDS --------------------------------------------- 
+// -------------------------------  -------------------------------  ------------------------------- 
 
 #respond {
     overflow: hidden;
@@ -634,15 +634,16 @@ h3#reply-title {
     display: inline;
 }
 
-/* -------------------------------  -------------------------------  ------------------------------- */
-/* -------------------------------  -------------------------------  ------------------------------- */
-/* -------------------------------              LÕPP 		     ------------------------------- */
-/* -------------------------------  -------------------------------  ------------------------------- */
-/* -------------------------------  -------------------------------  ------------------------------- */
+// -------------------------------  -------------------------------  ------------------------------- 
+// -------------------------------  -------------------------------  ------------------------------- 
+// -------------------------------              LÕPP 		     ------------------------------- 
+// -------------------------------  -------------------------------  ------------------------------- 
+// -------------------------------  -------------------------------  ------------------------------- 
 
 
-/* KUI KÕIK ON TEHTUD, SIIS SIIA LISADA TABLETS & PHONES !! */
+// KUI KÕIK ON TEHTUD, SIIS SIIA LISADA TABLETS & PHONES !! 
 
+*/
 
 /* KÕIK, MIS KEVINI POOLT JUBA TEHTUD OLI! */
 
