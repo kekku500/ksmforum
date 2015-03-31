@@ -25,7 +25,7 @@ class Main extends CI_Controller {
         $this->template->addCSS('assets/css/bootstrap-theme-min.css');
         
         $this->template->addJS('assets/js/main.js');
-        $this->template->addCSS('assets/css/main-min.css');
+        $this->template->addCSS('assets/css/main.css');
 		
 		
         $this->template->addCSS_Noscript('assets/css/main_noscript.css');
@@ -369,6 +369,8 @@ class Main extends CI_Controller {
             $data['topic_root_post_id'] = $this->post_model->getRootPost($tid)['post_id'];
         }
         
+        $data['topic'] = $topic;
+        $this->template->postbody("javascript_calls/re_createeventsource", $data); //kuula uute postituste loomist
         
         $this->viewed_topic($tid);       
         
@@ -378,7 +380,7 @@ class Main extends CI_Controller {
                 ));
             
         
-        $data['topic'] = $topic;
+       
         $data['posts'] = $this->post_model->getPostsPaginated($root_post_id, $page);
         
         
@@ -393,6 +395,8 @@ class Main extends CI_Controller {
         $data['cur_page'] = $page;
         $data['page_offset'] = 0;
         $this->template->body('topic/posts_bot_nav', $data);
+        
+        $this->template->body('topic/messageNewPosts');
     }
     
     //teema lisamise vaade

@@ -155,7 +155,7 @@ class Post_model extends CI_Model {
         return $query->row_array();
     }
     
-        public function getPost($pid){
+    public function getPost($pid){
         $this->db->order_by("pos", "asc");
         $this->db->join($this->users, $this->users.'.id = '.$this->table.'.uid');
         $this->db->join($this->topics, $this->topics.'.id = '.$this->table.'.tid');
@@ -245,6 +245,18 @@ class Post_model extends CI_Model {
      */
     public function delPost($pid){
         $this->db->delete($this->table, array('id' => $pid));
+    }
+    
+    public function getTopicMaxCreateTime($tid){
+        $this->db->select_max('create_time');
+        $this->db->where('tid', $tid);
+        
+        $query = $this->db->get($this->table);
+        
+        if($query->num_rows() == 0)
+            return null;
+                
+        return $query->row_array();
     }
     
     

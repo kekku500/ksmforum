@@ -29,6 +29,29 @@ function popupOff() {
             document.getElementById('registergoogle_form_outer').style.display = 'none';
 }
 
+/**
+ * 
+ * @param {type} timeout in milliseconds
+ * @returns {undefined}
+ */
+function displayMessageNewPosts(timeout){
+    document.getElementById('messageNewPosts_outer').style.display = 'block';
+    setTimeout(function(){
+        $('#messageNewPosts_outer').fadeOut('slow');
+    }, timeout);
+}
+
+/**
+ * Kui eventsource saab vastuse, siis peaks:
+ *                                  if(event.data == "messageNewPost")
+                                        displayMessageNewPosts(3000);
+ * @param {type} url - controlleri funktsioon, mida hakatakse kuulama
+ */
+function createEventSource(url){
+    //pole implemeneeritud
+}
+
+
 
 /**
  * base_url - lehekülje baas url. nt http://ksm.cs.ut.ee/

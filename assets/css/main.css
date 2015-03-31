@@ -748,3 +748,20 @@ h3#reply-title {
     padding-left: 10px;
     padding-top: 0px;
 }
+
+#messageNewPosts_outer {
+	position:fixed;
+	display: none;
+	left: 50%;
+	top: 2%;
+	z-index: 2;
+}
+
+#messageNewPosts_inner {
+	background-color: #FFFF66;
+        border:1px solid #000000;
+	position: relative;
+	left: -50%;
+        font-weight: bold;
+        padding: 4%;
+}
