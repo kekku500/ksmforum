@@ -13,7 +13,7 @@ $post_count_stack = array();
 
 $prev_post_id = $posts[0]['post_id'];
 $root_depth = $posts[0]['depth'];
-
+//echo 'root_depth'.$root_depth;
 $cur_url_encoded = base64_encode(current_url());
 
 $posts_count = count($posts);
@@ -29,7 +29,7 @@ for($i = 1;$i<$posts_count;$i++){
         }
         $post_count_stack[$stack_size-1][0]++; //inc last element*/
     }
-
+    //print_r($post);
     ?>
     <div class='post_container' style="right: <?php echo -20*($post['depth']-$root_depth-1); ?>px;">
         <?php

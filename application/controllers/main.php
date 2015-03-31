@@ -547,6 +547,7 @@ class Main extends CI_Controller {
                 }
                 
                 //näita muudetavat postitust
+                $data['response_disabled'] = true;
                 $data['posts'][0] =  $post;
                 $data['posts'][0]['depth'] = 0;
                 $data['topic'] = array('id' => $post['topic_id'], 'name' => $post['topic_name']);
