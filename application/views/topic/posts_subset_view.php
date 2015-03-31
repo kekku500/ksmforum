@@ -8,41 +8,52 @@
 <?php
 // KOMMENTAARID
 $max_depth = $this->config->item('max_post_depth')+$posts[0]['depth'];
-$prev_post_id = -1;
-$root_depth = $posts[0]['depth'];
+
 $post_count_stack = array();
+
 $prev_post_id = $posts[0]['post_id'];
-$posts_count = count($posts);
+$root_depth = $posts[0]['depth'];
+
 $cur_url_encoded = base64_encode(current_url());
+
+$posts_count = count($posts);
 for($i = 1;$i<$posts_count;$i++){
     $post = $posts[$i];
     $stack_size = count($post_count_stack);
     if($post['depth'] > $stack_size){ //depth inc
         array_push($post_count_stack, array(1, $prev_post_id));
     }else{ //same depth or depth dec
-        $temp = 1;
         if($post['depth'] < $stack_size){ //depth dec
-            array_pop($post_count_stack);
-            $temp++;
+            $post_count_stack = array_slice($post_count_stack, 0, $post['depth']);
+            $stack_size = count($post_count_stack);
         }
-        $post_count_stack[$stack_size-$temp][0]++; //inc last element*/
+        $post_count_stack[$stack_size-1][0]++; //inc last element*/
     }
-    $prev_post_id = $post['post_id'];
+
     ?>
     <div class='post_container' style="right: <?php echo -20*($post['depth']-$root_depth-1); ?>px;">
         <?php
         if($post['depth']-$root_depth > 0){
             $max_post_count = $this->config->item('max_post_count')/($post['depth']-$root_depth);
-            if(end($post_count_stack)[0] > $max_post_count){ //post count limit
+            if(end($post_count_stack)[0] > $max_post_count){
+                //SAMA TASE EDASI
                 $segments_deeper = array('main', 'topic', $topic['id'], 1, end($post_count_stack)[1]);
                 ?><a href="<?php echo site_url($segments_deeper); ?>"><?php echo 'Edasi'; ?></a>
+                
+                <button onclick="loadPostContent(
+                <?php echo "'".base_url()."','".$topic['id']."', '1', '".end($post_count_stack)[1]."', '".$max_post_count."'";?>
+                                                )">Ajax edasi</button>
                 </div><?php
                 continue;
             }
         }
         if($post['depth'] > $max_depth){
+            //SÜGAVUSTESSE
             $segments_deeper = array('main', 'topic', $topic['id'], 1, $prev_post_id);
-            ?><a href="<?php echo site_url($segments_deeper); ?>"><?php echo 'Sügavamale'; ?></a><?php
+            ?><a href="<?php echo site_url($segments_deeper); ?>"><?php echo 'Sügavamale'; ?></a>
+            <button onclick="loadPostContent(
+            <?php echo "'".base_url()."','".$topic['id']."', '1', '".$prev_post_id."', '0'";?>
+                                            )">Ajax sügavamale</button> <?php
         }else{?>
             <h5>
           <?php echo $post['post_edit_time'].' - user['.$post['user_name'].'] - id['.$post['post_id'].']'.' - parent['.$post['parent_post_id'].']'; 

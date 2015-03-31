@@ -81,8 +81,10 @@ class Post_model extends CI_Model {
      * @param type $page_nr - Milline osa vastustest kuvada
      * @return type kommentaarid
      */
-    public function getPostsPaginated($root_post_id, $page_nr = 1){
-        if(!(ctype_digit($root_post_id) || is_int($root_post_id)) || !(ctype_digit($page_nr) || is_int($page_nr)))
+    public function getPostsPaginated($root_post_id, $page_nr = 1, $offset = 0){
+        if(!(ctype_digit($root_post_id) || is_int($root_post_id)) || 
+                !(ctype_digit($page_nr) || is_int($page_nr)) ||
+                !(ctype_digit($offset) || is_int($offset)))
             return;
         $this->config->load('posts');
         //dont even ask
@@ -115,8 +117,8 @@ class Post_model extends CI_Model {
                                 order by posts.pos asc) h2 
                             where valid = 1 and (post_count = 0 OR 
                                 post_count between 
-                                ".(($page_nr-1)*$this->config->item('max_post_count')+1)." and
-                                ".($page_nr*$this->config->item('max_post_count')).") and
+                                ".(($page_nr-1)*$this->config->item('max_post_count')+1+$offset)." and
+                                ".($page_nr*$this->config->item('max_post_count')+$offset).") and
                                 depth <= root_depth+".($this->config->item('max_post_depth')+1)."
                             order by h2.p_pid asc) h3
                         join users on users.id = h3.uid

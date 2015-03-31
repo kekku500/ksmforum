@@ -391,6 +391,7 @@ class Main extends CI_Controller {
         $data['next_page_valid'] = ($this->config->item('max_post_count')*$page < $reply_count);
         $data['root_post'] = array('post_id' => $root_post_id);
         $data['cur_page'] = $page;
+        $data['page_offset'] = 0;
         $this->template->body('topic/posts_bot_nav', $data);
     }
     
