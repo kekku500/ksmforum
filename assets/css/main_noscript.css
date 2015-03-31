@@ -33,3 +33,7 @@
 #registergoogle_form_inner {
 	left: 0%;
 }
+
+.ajax_button {
+    display: none;
+}

@@ -40,7 +40,7 @@ for($i = 1;$i<$posts_count;$i++){
                 $segments_deeper = array('main', 'topic', $topic['id'], 1, end($post_count_stack)[1]);
                 ?><a href="<?php echo site_url($segments_deeper); ?>"><?php echo 'Edasi'; ?></a>
                 
-                <button onclick="loadPostContent(
+                <button class="ajax_button" onclick="loadPostContent(
                 <?php echo "'".base_url()."','".$topic['id']."', '1', '".end($post_count_stack)[1]."', '".$max_post_count."'";?>
                                                 )">Ajax edasi</button>
                 </div><?php
@@ -51,7 +51,7 @@ for($i = 1;$i<$posts_count;$i++){
             //SÜGAVUSTESSE
             $segments_deeper = array('main', 'topic', $topic['id'], 1, $prev_post_id);
             ?><a href="<?php echo site_url($segments_deeper); ?>"><?php echo 'Sügavamale'; ?></a>
-            <button onclick="loadPostContent(
+            <button class="ajax_button" onclick="loadPostContent(
             <?php echo "'".base_url()."','".$topic['id']."', '1', '".$prev_post_id."', '0'";?>
                                             )">Ajax sügavamale</button> <?php
         }else{?>
