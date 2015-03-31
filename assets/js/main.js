@@ -29,3 +29,8 @@ function popupOff() {
             document.getElementById('registergoogle_form_outer').style.display = 'none';
 }
 
+
+function loadPostContent(base_url, tid, page_nr, root_post_id){
+    alert("pole implementeeritud");
+    //peaks kutsuma välja baseurl+ajax/posts_content/tid/page_nr/root_post_id
+}

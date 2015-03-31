@@ -17,12 +17,17 @@ if($cur_page > 1 || $next_page_valid){
         if($next_page_valid){
             $segments_nextpage = array('main', 'topic', $topic['id'], $cur_page+1, $root_post['post_id']);?>
             <a href="<?php echo site_url($segments_nextpage); ?>"><?php echo 'Edasi'; ?></a>
+
+            <button onclick="loadPostContent(
+            <?php echo "'".base_url()."','".$topic['id']."', '".($cur_page+1)."', '".$root_post['post_id']."'";?>
+                                            )">Ajax edasi</button> 
         <?php
         }
         ?>
     </div>
     <?php
 }
+
 
 
 

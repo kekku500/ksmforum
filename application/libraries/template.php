@@ -71,16 +71,26 @@ class Template{
     private function load_JS_and_CSS(){
         $this->ci->load->helper('html', 'url');
         
+
+        
         foreach ($this->js_files as $js){
-            $this->scripts .= '<script type="text/javascript" src="'.base_url($js).'"></script>';
+            $this->scripts .= '<script async type="text/javascript" src="'.base_url($js).'"></script>';
         }
+        
+        
+        
         foreach ($this->css_files as $css){
             $this->scripts .= link_tag($css);
         }
         
+        
+        
+       
         foreach ($this->css_ns_files as $css){
             $this->scripts .= '<noscript>'.link_tag($css).'</noscript>';
         }
+        
+        
         
     }
     
