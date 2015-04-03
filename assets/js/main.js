@@ -21,6 +21,28 @@ function popupOff() {
             document.getElementById('registergoogle_form_outer').style.display = 'none';
 }
 
+/*
+var ajaxRequest;
+function ajaxFunction(){
+    try{
+        ajaxRequest = New XMLHttpRequest();
+    }catch (e){
+        try{
+        ajaxRequest = new ActiveXObject("Microsoft.XMLHTTP");
+        }catch (e){
+            alert("You fucked up");
+            return false;
+        }
+    }
+}
+function processRequest(){
+    if (req.readyState == 4){
+        if (req.status == 200){
+            if(event.data == "messageNewPost")
+                displayMessageNewPosts(3000);
+        }
+    }
+}*/
 /**
  * 
  * @param {type} timeout in milliseconds
@@ -40,6 +62,10 @@ function displayMessageNewPosts(timeout){
  * @param {type} url - controlleri funktsioon, mida hakatakse kuulama
  */
 function createEventSource(url){
+    /*ajaxFunction();
+    ajaxRequest.onreadystatechange = processRequest();
+    ajaxRequest.open("GET", url, true);
+    ajaxRequest.send();*/
     //pole implemeneeritud
 }
 
@@ -58,7 +84,10 @@ function loadPostContent(base_url, tid, page_nr, root_post_id, offset, disable_h
     if(disable_hash != 'undefined' && !disable_hash){
         addHash({a: base_url,b: tid,c: page_nr,d: root_post_id,e: offset});
     }
-    
+    /*ajaxFunction();
+    ajaxRequest.onreadystatechange = processRequest(); //See ei ole kindlasti õige. Struktuuri mõttes pandud.
+    ajaxRequest.open("GET", baseurl+ajax/posts_content/tid/page_nr/root_post_id/offset,true);
+    ajaxRequest.send();*/
     alert("pole implementeeritud ("+ base_url + tid + page_nr + root_post_id +"-"+ offset +")");
     //peaks kutsuma välja get request, url: baseurl+ajax/posts_content/tid/page_nr/root_post_id/offset
     
