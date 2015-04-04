@@ -80,10 +80,8 @@ function loadPostContent(base_url, tid, page_nr, root_post_id, offset, disable_h
     if(disable_hash != 'undefined' && !disable_hash){
         addHash({a: base_url,b: tid,c: page_nr,d: root_post_id,e: offset});
     }
-    var new_url = base_url + tid + page_nr + root_post_id +"-"+ offset:
-    $.get(new_url,function(){
-    alert("pole implementeeritud ("+ new_url +")");
-    });
+    var new_url = base_url + 'ajax/posts/' + tid+ '/' + page_nr+ '/' + root_post_id ++ '/'+ offset:
+    $.get(new_url);
 
     //peaks kutsuma välja get request, url: baseurl+ajax/posts_content/tid/page_nr/root_post_id/offset
     
