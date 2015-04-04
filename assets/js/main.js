@@ -21,7 +21,7 @@ function popupOff() {
             document.getElementById('registergoogle_form_outer').style.display = 'none';
 }
 
-
+/* Teeb sama, mis jquery get
 var ajaxRequest;
  function ajaxFunction(url,cfunc){   //url ja funktsioon, mida readystate muutudes tegema peab
      try{
@@ -38,6 +38,7 @@ var ajaxRequest;
      ajaxRequest.open("GET",url,true);
      ajaxRequest.send();
  }
+ */
 /**
  * 
  * @param {type} timeout in milliseconds
@@ -62,7 +63,6 @@ function createEventSource(url){
             displayMessageNewPosts(3000);
         }
     });
-    //pole implemeneeritud
 }
 
 
@@ -81,7 +81,9 @@ function loadPostContent(base_url, tid, page_nr, root_post_id, offset, disable_h
         addHash({a: base_url,b: tid,c: page_nr,d: root_post_id,e: offset});
     }
     var new_url = base_url + 'ajax/posts/' + tid+ '/' + page_nr+ '/' + root_post_id ++ '/'+ offset:
-    $.get(new_url);
+    $.get(new_url,function(data){
+    addHash(data)
+    });
 
     //peaks kutsuma välja get request, url: baseurl+ajax/posts_content/tid/page_nr/root_post_id/offset
     
