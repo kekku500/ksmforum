@@ -201,7 +201,7 @@ function delCookie(name) {
 
 function checkOnline(){
     if(typeof(EventSource) !== "undefined") {
-        var source = new EventSource('http://localhost/serversend/upload_posts');
+        var source = new EventSource(location.origin+'/serversend/upload_posts');
         source.addEventListener("message", function(e) {
             //console.log(e.data);
         }, false);
@@ -305,13 +305,15 @@ function uploadOfflineClosure(db, item){
         tx.executeSql('DELETE FROM Posts WHERE p_pid="'+p_pid+'" AND content="'+content+'"', [],
         function(tx, rs){
             console.log('DELETE FROM Posts WHERE p_pid="'+p_pid+'" AND content="'+content+'"');
-            ajaxPostComment(p_pid, content);
+            ajaxPostComment(p_pid, content, 0);
          });
     });
     
 }
 
-function ajaxPostComment(id, content){
+function ajaxPostComment(id, content, i){
+    if(i > 5)
+        return;
     console.log("Posting: " + id + " " + content);
     var postUrl = location.origin + "/main/addpost/"+id;
     console.log(postUrl);
@@ -323,7 +325,7 @@ function ajaxPostComment(id, content){
         console.log("Posting succcess!");
     }).fail(function(data){
         console.log("Posting failed!");
-        ajaxPostComment(id, content);
+        ajaxPostComment(id, content, i+1);
     });
 }
 
