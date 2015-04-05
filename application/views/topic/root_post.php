@@ -11,6 +11,10 @@
 <h3><?php echo $topic['name']; ?></h3>
 
 <?php
+if(!isset($response_disabled))
+    $response_disabled = false;
+
+
 $cur_url_encoded = base64_encode(current_url());
 if($post['parent_post_id'] != null){
     $segments_root = array('main', 'topic', $topic['id'], 1, $topic_root_post_id);
@@ -24,7 +28,7 @@ if($post['parent_post_id'] != null){
 <div class='post_container'>
     <h5>
   <?php echo $post['post_edit_time'].' - user['.$post['user_name'].'] - id['.$post['post_id'].']'.' - parent['.$post['parent_post_id'].']'; 
-        if ($this->auth->isLoggedIn() && !$post['deleted']){
+        if ($this->auth->isLoggedIn() && !$post['deleted'] && !$response_disabled){
             //if($this->auth->getUserId() != $post['user_id']){ //kui praegune kasutaja ei loonud seda kommentaari
                 $segmentsadd = array('main', 'addpost', $post['post_id'], $cur_url_encoded);?>
                 <a href="<?php echo site_url($segmentsadd); ?>"><?php echo $this->lang->line('post_anchor_add'); ?></a><?php 

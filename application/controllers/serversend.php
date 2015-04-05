@@ -36,6 +36,18 @@ class ServerSend extends CI_Controller {
         flush();
     }
     
+    public function upload_posts(){
+        header('Content-Type: text/event-stream');
+        header('Cache-Control: no-cache');
+        header("Connection: keep-alive");
+        
+        while(true){
+            $data = "online";
+            $this->sendMessage($data);
+            sleep(100);
+        }
+    }
+    
     
     
 }

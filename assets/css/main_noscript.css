@@ -37,3 +37,7 @@
 .ajax_button {
     display: none;
 }
+
+#addpost_button {
+    display: block;
+}

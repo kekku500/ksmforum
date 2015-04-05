@@ -53,8 +53,8 @@ class Multiform {
         return form_open($url).'<input type="hidden" name="form" value="'.$form.'" />';
     }*/
     
-    function form_open($url){
-        return form_open($url).'<input type="hidden" name="form" value="'.$this->form.'" />';
+    function form_open($url, $data = null){
+        return form_open($url, $data).'<input type="hidden" name="form" value="'.$this->form.'" />';
     }
     
     function is_form($form){

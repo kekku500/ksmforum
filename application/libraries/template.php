@@ -26,8 +26,11 @@ class Template{
         $this->loadvars['title'] = $title;
     }
     
-    function body($view, $vars = array()){
-        $this->body .= $this->ci->load->view($view, $vars, true);
+    function body($view, $vars = array(), $processed = false){
+        if($processed)
+            $this->body .= $view;
+        else
+            $this->body .= $this->ci->load->view($view, $vars, true);
     }
     
     function prebody($view, $vars = array()){
@@ -51,7 +54,7 @@ class Template{
         $vars['body'] .= $this->postbody;
         
         $vars['scripts'] = $this->scripts;
-        
+
         return $this->ci->load->view('templates/'.$template, $vars);
     }
     

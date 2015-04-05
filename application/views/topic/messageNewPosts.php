@@ -1,5 +1,5 @@
 <div id="messageNewPosts_outer">
     <div id="messageNewPosts_inner">
-        Teemasse lisati uus kommentaar.
+        ERROR_NO_MESSAGE
     </div>
 </div>

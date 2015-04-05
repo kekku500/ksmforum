@@ -6,9 +6,9 @@ class Main extends CI_Controller {
     public function __construct() {
         parent::__construct();
 
-        $this->load->library(array('multiform', 'form_validation', 'googleoauth2', 'spamblocker'));
+        $this->load->library(array('multiform', 'form_validation', 'googleoauth2'));
         $this->load->model(array('topic_model', 'post_model', 'forum_model', 'user_model', 'session_model'));
-        $this->load->helper(array('url','date', 'form')); 
+        $this->load->helper(array('url','date', 'form', 'cookie')); 
 		
         
         $segments = array('main', 'oauth2callback');
@@ -376,32 +376,49 @@ class Main extends CI_Controller {
         
         $this->navigator($topic['fid'], 
                 array(
-                    array($topic['name'], current_url())
+                    array($topic['name'], base_url()."main/topic/".$topic['id']."/1/".$root_post_id)
                 ));
-            
         
-       
         $data['posts'] = $this->post_model->getPostsPaginated($root_post_id, $page);
         
         
         $data['post'] = $data['posts'][0];
         $this->template->body('topic/root_post', $data);
-        $data['response_disabled'] = false;      
-        $this->template->body('topic/posts_subset_view', $data);
         
+        $data['response_disabled'] = false;      
+        $data['posts'] = $this->post_model->getPostsPaginated($root_post_id, $page);
+        $data['topic']['id'] = $tid;
+        $data['cur_url_encoded'] = base64_encode(current_url());
         $reply_count = $this->post_model->getPostReplyCount($root_post_id);
         $data['next_page_valid'] = ($this->config->item('max_post_count')*$page < $reply_count);
-        $data['root_post'] = array('post_id' => $root_post_id);
         $data['cur_page'] = $page;
+        $data['topic_root_post_id'] = $this->post_model->getRootPost($tid)['post_id'];
         $data['page_offset'] = 0;
-        $this->template->body('topic/posts_bot_nav', $data);
         
+        $xmlString = $this->load->view('topic/posts_xml', $data, true);
+        $document = $this->parseXML($xmlString, 'assets/xslt/posts.xsl');
+        $this->template->body($document, array(), true);
+
         $this->template->body('topic/messageNewPosts');
+    }
+    
+    private function parseXML($xmlString, $xsltFilePath){
+        $xml = new DOMDocument;
+        $xml->loadXML($xmlString);
+        
+        $xsl = new DOMDocument;
+        $xsl->load($xsltFilePath);
+        
+        $proc = new XSLTProcessor;
+        $proc->importStyleSheet($xsl); // attach the xsl rules
+
+        $document = $proc->transformToXml($xml);
+
+        return $document;
     }
     
     //teema lisamise vaade
     public function addtopic($fid){
-        $this->spamblocker->check('addtopic', now(), 0.1);
         $forum = $this->forum_model->getForum($fid);
         if($forum == null){
             $this->navigator();
@@ -431,7 +448,6 @@ class Main extends CI_Controller {
                     $this->post_model->addPost($tid, 'null', $this->input->post('content'));
                     
                     $segments = array('main', 'topic', $tid);
-
                     redirect(site_url($segments));
                 }
             }
@@ -459,8 +475,7 @@ class Main extends CI_Controller {
     }
     
     //postituse lisamise vaade
-    public function addpost($pid, $url){
-        $this->spamblocker->check('addpost', now(), 0.1);
+    public function addpost($pid, $url = null){
         $post =  $this->post_model->getPost($pid);
         
         if($post == null || $post['deleted']){
@@ -487,13 +502,15 @@ class Main extends CI_Controller {
                     if($this->form_validation->run('addeditpost')){
                         $this->post_model->addPost($post['topic_id'], $pid, $this->input->post('content'));
                         redirect(base64_decode($url));
-                    } 
+                    }
                 }
+                
+  
+                $data['topic_root_post_id'] = $this->post_model->getRootPost($post['topic_id'])['post_id'];
                 $data['response_disabled'] = true;
-                $data['posts'][0] =  $post;
-                $data['posts'][0]['depth'] = 0;
+                $data['post'] = $post;
                 $data['topic'] = array('id' => $post['topic_id'], 'name' => $post['topic_name']);
-                $this->template->body('topic/posts_view', $data);
+                $this->template->body('topic/root_post', $data);
 
                 //language
                 $data['title'] = $this->lang->line('addpost_title');
@@ -502,13 +519,16 @@ class Main extends CI_Controller {
 
                 $this->multiform->setForm('addpost');
                 $this->template->body('forms/post_form', $data);  
+                
+                 $this->template->body('topic/messageNewPosts');
             //}else{
             //    $this->template->body('errors/no_permission');
             //}
         }else{
             $this->template->body('errors/no_permission');
         }
-
+        
+       
     }
     
     //postituse muutmise vaade
@@ -547,11 +567,11 @@ class Main extends CI_Controller {
                 }
                 
                 //näita muudetavat postitust
+                $data['topic_root_post_id'] = $this->post_model->getRootPost($post['topic_id'])['post_id'];
                 $data['response_disabled'] = true;
-                $data['posts'][0] =  $post;
-                $data['posts'][0]['depth'] = 0;
+                $data['post'] = $post;
                 $data['topic'] = array('id' => $post['topic_id'], 'name' => $post['topic_name']);
-                $this->template->body('topic/posts_view', $data);
+                $this->template->body('topic/root_post', $data);
                 
                 //lang
                 $data['title'] = $this->lang->line('editpost_title');

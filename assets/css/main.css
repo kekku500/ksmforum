@@ -765,3 +765,7 @@ h3#reply-title {
         font-weight: bold;
         padding: 4%;
 }
+
+#addpost_button {
+    display: none;
+}
