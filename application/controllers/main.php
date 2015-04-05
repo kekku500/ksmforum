@@ -24,8 +24,8 @@ class Main extends CI_Controller {
         $this->template->addCSS('assets/css/bootstrap-min.css');
         $this->template->addCSS('assets/css/bootstrap-theme-min.css');
         
-        $this->template->addJS('assets/js/main.js');
-        $this->template->addCSS('assets/css/main.css');
+        $this->template->addJS('assets/js/main-min.js');
+        $this->template->addCSS('assets/css/main-min.css');
 		
 		
         $this->template->addCSS_Noscript('assets/css/main_noscript.css');
@@ -397,6 +397,8 @@ class Main extends CI_Controller {
         
         $xmlString = $this->load->view('topic/posts_xml', $data, true);
         $document = $this->parseXML($xmlString, 'assets/xslt/posts.xsl');
+        $document = str_replace('<?xml version="1.0"?>', '', $document);
+        
         $this->template->body($document, array(), true);
 
         $this->template->body('topic/messageNewPosts');

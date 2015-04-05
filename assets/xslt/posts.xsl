@@ -1,7 +1,5 @@
-<?xml version="1.0" encoding="UTF-8"?>
 <xsl:stylesheet version="1.0"
 xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
-<xsl:output method="html" version="5" indent="yes"/>
 <xsl:template match="/">
     <xsl:for-each select="postsdata/posts/post">
         <xsl:apply-templates select="pagination" />
@@ -18,7 +16,7 @@ xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
         <xsl:attribute name="style">
             right: <xsl:value-of select="../indent" />%
         </xsl:attribute>
-        <xsl:attribute name="value">
+        <xsl:attribute name="id">
             <xsl:value-of select="../id" />
         </xsl:attribute>
         <h5>
@@ -42,7 +40,7 @@ xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
         <xsl:attribute name="style">
             right: <xsl:value-of select="../indent" />%
         </xsl:attribute>
-        <xsl:attribute name="value">
+        <xsl:attribute name="id">
             <xsl:value-of select="../id" />
         </xsl:attribute>
         <xsl:apply-templates select="nextpage" />
@@ -60,7 +58,7 @@ xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
         <xsl:attribute name="style">
             right: <xsl:value-of select="../info/rootPostIndent" />%
         </xsl:attribute>
-        <xsl:attribute name="value">
+        <xsl:attribute name="id">
             <xsl:value-of select="../info/rootPostId" />-<xsl:value-of select="../info/pageNr + 1" />
         </xsl:attribute>
         <xsl:apply-templates select="prevpage" />

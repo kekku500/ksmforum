@@ -116,9 +116,9 @@ function loadPostContent(base_url, tid, page_nr, root_post_id, offset, disable_h
     xsltProcessor.importStylesheet(xsl);
     var resultDocument = xsltProcessor.transformToFragment(xml, document);
     if(page_nr != "1"){
-        var postContainer = $('.post_container[value="'+replace_with_id+'-'+page_nr+'"]');
+        var postContainer = $('.post_container[id="'+replace_with_id+'-'+page_nr+'"]');
     }else{
-        var postContainer = $('.post_container[value="'+replace_with_id+'"]');
+        var postContainer = $('.post_container[id="'+replace_with_id+'"]');
     }
     
     postContainer.removeClass("post_container");

@@ -5,9 +5,8 @@
 * [post_edit_time], [depth], [position[,[user_id], [user_name], [deleted])
 */
 ?>
-<?xml version="1.0" encoding="UTF-8"?>
-<!-- 
-<?xml-stylesheet type="text/xsl" href="<?php echo base_url()."assets/xslt/posts.xsl";?>" ?>
+<!--  
+<?xml-stylesheet type="text/xsl" href="<?php /*echo base_url()."assets/xslt/posts.xsl";*/ ?>" ?>
  -->
 <postsdata>
     <info>
