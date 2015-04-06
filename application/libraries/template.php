@@ -77,7 +77,7 @@ class Template{
 
         
         foreach ($this->js_files as $js){
-            $this->scripts .= '<script async type="text/javascript" src="'.base_url($js).'"></script>';
+            $this->scripts .= '<script defer type="text/javascript" src="'.base_url($js).'"></script>';
         }
         
         
