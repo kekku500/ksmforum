@@ -334,6 +334,8 @@ function ajaxPostComment(id, content, i){
 function beginCode(){
     checkHash();
     checkOnline(); 
+    for(var i = 0;i<loadInlineCode.length;i++)
+        loadInlineCode[i]();
 }
 
 $(document).ready(beginCode);

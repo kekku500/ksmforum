@@ -1,1 +1,6 @@
-<script>registerGooglePopup();</script>
+<script>
+    loadInlineCode.push(
+        function(){
+            registerGooglePopup();
+        });
+</script>

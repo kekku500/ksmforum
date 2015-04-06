@@ -1,1 +1,6 @@
-<script>registerPopup();</script>
+<script>
+    loadInlineCode.push(
+        function(){
+            registerPopup();
+        });
+</script>

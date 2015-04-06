@@ -1,1 +1,6 @@
-<script>loginPopup();</script>
+<script>
+    loadInlineCode.push(
+        function(){
+            loginPopup();
+        });
+</script>
