@@ -164,10 +164,23 @@ class Main extends CI_Controller {
                 $this->multiform->setSuccessMessage($this->lang->line('changepassword_success_msg'));
             } 
         }
+        
+        if($this->multiform->is_form('del_user')){
+            
+            if($this->form_validation->run('del_user')){ 
+                if($this->input->post('delete') == '1'){
+                    $this->user_model->delUser($this->auth->getUserId());
+                    $this->logout(base64_encode(base_url()));
+                }
+            } 
+        }
  
         $formdata['pass_null'] = !isset($passState);
         $this->multiform->setForm('change_password');
         $this->template->body('forms/change_password_form', $formdata);
+        
+        $this->multiform->setForm('del_user');
+        $this->template->body('forms/delete_user.php');
     }
     
     public function changePasswordCheck(){

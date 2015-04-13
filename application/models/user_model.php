@@ -167,7 +167,7 @@ class User_model extends CI_Model {
     
     //TODO
     public function delUser($uid){
-        
+        $this->db->delete($this->table, array('id' => $uid));
     }
     
 }

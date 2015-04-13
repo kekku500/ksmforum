@@ -168,6 +168,13 @@ $config = array(
                                     'is_unique[users.name]|'.
                                     'alpha_numeric'
                         )
+                     ),
+    'del_user' => array(
+                        array(
+                         'field'   => 'delete',
+                         'label'   => 'Jah/Ei',
+                         'rules'   => 'required'
+                        )
                      )
 );
 
