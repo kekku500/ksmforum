@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head profile="http://selenium-ide.openqa.org/profiles/test-case">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<link rel="selenium.base" href="http://ksm.cs.ut.ee/" />
+<title>Registreeri: Kasutajanimi pikk, Email pikk, Salasõna pikk ja ei klapi kordusväljaga.</title>
+</head>
+<body>
+<table cellpadding="1" cellspacing="1" border="1">
+<thead>
+<tr><td rowspan="1" colspan="3">Registreeri: Kasutajanimi pikk, Email pikk, Salasõna pikk ja ei klapi kordusväljaga.</td></tr>
+</thead><tbody>
+<tr>
+	<td>open</td>
+	<td>/</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>css=button</td>
+	<td></td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>css=#register_form_inner &gt; form &gt; input[name=&quot;user&quot;]</td>
+	<td>ircjoemwxjgaoehgxehgo8453hjcgt5om8xj,gto84j5go</td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>name=email</td>
+	<td>jt8mose8jcgxm8eshxogmiefxskehxguehgukehxguesxheryjgdshfmkeshrmsegushgk@ejrxyhkrfmserfxhkmefhkeshf.afewfwexegresgesgxegxcgesgee</td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>css=#register_form_inner &gt; form &gt; input[name=&quot;pass&quot;]</td>
+	<td>aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa</td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>name=passconf</td>
+	<td>bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb</td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>css=#register_form_inner &gt; form &gt; div &gt; input[type=&quot;submit&quot;]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>assertText</td>
+	<td>css=p</td>
+	<td>Väli Kasutajanimi ei või ületada 25 tähemärki.</td>
+</tr>
+<tr>
+	<td>assertText</td>
+	<td>//div[@id='register_form_inner']/p[2]</td>
+	<td>Väli Email peab sisaldama korrektset emaili aadress.</td>
+</tr>
+<tr>
+	<td>assertText</td>
+	<td>//div[@id='register_form_inner']/p[3]</td>
+	<td>Väli Salasõna ei või ületada 50 tähemärki.</td>
+</tr>
+<tr>
+	<td>assertText</td>
+	<td>//div[@id='register_form_inner']/p[4]</td>
+	<td>Väli Korda salasõna ei ole võrdne Salasõna väljaga.</td>
+</tr>
+</tbody></table>
+</body>
+</html>
