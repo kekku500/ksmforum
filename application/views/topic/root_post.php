@@ -25,7 +25,7 @@ if($post['parent_post_id'] != null){
 }
 ?>
 
-<div class='post_container'>
+<div class='post_container' <?php echo 'id="'.$post['post_id'].'"'; ?>>
     <h5>
   <?php echo $post['post_edit_time'].' - user['.$post['user_name'].'] - id['.$post['post_id'].']'.' - parent['.$post['parent_post_id'].']'; 
         if ($this->auth->isLoggedIn() && !$post['deleted'] && !$response_disabled){

@@ -169,6 +169,12 @@ class Main extends CI_Controller {
             
             if($this->form_validation->run('del_user')){ 
                 if($this->input->post('delete') == '1'){
+                    $userPosts = $this->post_model->getPostsByUser($this->auth->getUserId());
+                    
+                    foreach($userPosts as $userPost){
+                        $this->post_model->delPostRecursive($userPost);
+                    }
+
                     $this->user_model->delUser($this->auth->getUserId());
                     $this->logout(base64_encode(base_url()));
                 }

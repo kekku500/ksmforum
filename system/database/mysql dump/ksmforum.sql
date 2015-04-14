@@ -280,7 +280,7 @@ INSERT INTO `usergroups` (`id`, `name`, `addforum`) VALUES
 
 CREATE TABLE IF NOT EXISTS `users` (
 `id` int(10) unsigned NOT NULL,
-  `name` varchar(25) NOT NULL,
+  `name` varchar(25) DEFAULT NULL,
   `pass` varchar(50) DEFAULT NULL,
   `email` varchar(320) NOT NULL,
   `create_time` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',

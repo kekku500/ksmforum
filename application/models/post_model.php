@@ -75,6 +75,27 @@ class Post_model extends CI_Model {
         return $query->result_array();
     }
     
+    public function getPostsByUser($uid){
+        $this->db->order_by("pos", "asc");
+        $this->db->join($this->users, $this->users.'.id = '.$this->table.'.uid');
+        $this->db->select(
+                'posts.id as post_id,
+                posts.p_pid as parent_post_id,
+                content,
+                posts.edit_time as post_edit_time,
+                depth,
+                pos as position,
+                users.id as user_id,
+                name as user_name,
+                posts.deleted as deleted,
+                tid as topic_id');
+        
+        $this->db->where('uid', $uid);
+        $query = $this->db->get($this->table);
+                
+        return $query->result_array();
+    }
+    
     /**
      * Seaded: posts.php
      * @param type $root_post_id - Kommentaari id, mis on juureks
