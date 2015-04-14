@@ -4,12 +4,12 @@
 <head profile="http://selenium-ide.openqa.org/profiles/test-case">
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 <link rel="selenium.base" href="http://ksm.cs.ut.ee/" />
-<title>Lisa/kustuta kommentaar: XSS injection</title>
+<title>Lisa kommentaar: valed andmed - tühi sisu</title>
 </head>
 <body>
 <table cellpadding="1" cellspacing="1" border="1">
 <thead>
-<tr><td rowspan="1" colspan="3">Lisa/kustuta kommentaar: XSS injection</td></tr>
+<tr><td rowspan="1" colspan="3">Lisa kommentaar: valed andmed - tühi sisu</td></tr>
 </thead><tbody>
 <tr>
 	<td>open</td>
@@ -24,7 +24,7 @@
 <tr>
 	<td>type</td>
 	<td>name=content</td>
-	<td>&lt;iframe&gt;meh&lt;/iframe&gt;</td>
+	<td></td>
 </tr>
 <tr>
 	<td>clickAndWait</td>
@@ -33,19 +33,10 @@
 </tr>
 <tr>
 	<td>assertText</td>
-	<td>//div[3]/p</td>
-	<td>&lt;iframe&gt;meh&lt;/iframe&gt;</td>
+	<td>//p[2]</td>
+	<td>Väli Sisu on kohustuslik.</td>
 </tr>
-<tr>
-	<td>clickAndWait</td>
-	<td>//div[3]/h5/a[3]</td>
-	<td></td>
-</tr>
-<tr>
-	<td>assertElementNotPresent</td>
-	<td>//div[3]/p</td>
-	<td></td>
-</tr>
+
 </tbody></table>
 </body>
 </html>
