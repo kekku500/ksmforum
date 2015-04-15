@@ -5,7 +5,7 @@
 */
 ?>
 
-<table class="forum_table">
+<table class="table table-hover forum_table">
 <?php
 $category_id = -1;
 foreach ($forums as $forum){

@@ -1,4 +1,4 @@
-<div style="border:5px solid;">    
+<div class="settings_item_box">    
     <p><?php echo $this->lang->line('changepassword_header'); ?></p>
     <?php 
     echo $this->multiform->validation_errors();

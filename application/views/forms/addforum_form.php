@@ -9,7 +9,7 @@ echo $this->multiform->form_open(current_url());  ?>
     <?php echo $this->lang->line('addforum_name'); ?>
     <input type="text" name="name" value="<?php echo $this->multiform->set_value('name'); ?>" size="50" /><br>
 
-    <p style="margin-bottom: 0px;"><?php echo $this->lang->line('addforum_parent');?></p>
+    <p class="admin_item_box"><?php echo $this->lang->line('addforum_parent');?></p>
     <select name="p_fid">
         <option value="0">-</option>
         <?php

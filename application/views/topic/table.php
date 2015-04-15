@@ -7,7 +7,7 @@
 */
 ?>
 
-<table class="forum_table">
+<table class="table table-hover forum_table">
 <?php
 
 if($this->auth->isLoggedIn()){

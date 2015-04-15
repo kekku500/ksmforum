@@ -6,7 +6,7 @@ echo $this->multiform->validation_errors();
 
 echo $this->multiform->form_open(current_url()); ?>
 
-    <p style="margin-bottom: 0px;"><?php echo $this->lang->line('delforum_choice'); ?></p>
+    <p class="admin_item_box"><?php echo $this->lang->line('delforum_choice'); ?></p>
     <select name="fid">
         <option value="null"></option>
         <?php

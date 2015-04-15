@@ -18,16 +18,14 @@ class Main extends CI_Controller {
         
         $this->lang->load('forum');
         
+        //javascript
         $this->template->addJS('assets/js/jquery-1.11.2.min.js');
-
         $this->template->addJS('assets/js/bootstrap.min.js');
+        $this->template->addJS('assets/js/main-min.js');
+        //css
         $this->template->addCSS('assets/css/bootstrap-min.css');
         $this->template->addCSS('assets/css/bootstrap-theme-min.css');
-        
-        $this->template->addJS('assets/js/main-min.js');
-        $this->template->addCSS('assets/css/main-min.css');
-		
-		
+        $this->template->addCSS('assets/css/main.css');
         $this->template->addCSS_Noscript('assets/css/main_noscript.css');
 		
         $this->check_login();
@@ -42,7 +40,7 @@ class Main extends CI_Controller {
             'visitors' => $this->session_model->visitorCount()
         ));
         
-        $this->template->load('default'); 
+        $this->template->load('bootstrap'); 
     }
     
     //peale ükskõik, mis meetodit, kutstu veel end()

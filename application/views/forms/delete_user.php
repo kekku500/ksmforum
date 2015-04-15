@@ -1,4 +1,4 @@
-<div style="border:5px solid;">    
+<div class="settings_item_box">    
     <p><?php echo 'Kustuta kasutaja' ?></p>
 
     <?php 
