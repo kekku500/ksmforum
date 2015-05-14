@@ -11,7 +11,7 @@
 <postsdata>
     <info>
         <rootPostId><?php echo $posts[0]['post_id'];?></rootPostId>
-        <rootPostIndent><?php echo 2*$posts[0]['depth'];?></rootPostIndent>
+        <rootPostIndent><?php echo 3*$posts[0]['depth'];?></rootPostIndent>
         <pageNr><?php echo $cur_page;?></pageNr>
         <pageOffset><?php echo $page_offset;?></pageOffset>
         <topicId><?php echo $topic['id'];?></topicId>
@@ -35,7 +35,7 @@
             }?>
             <post>
                 <id><?php echo $post['post_id'];?></id>
-                <indent><?php echo 2*($post['depth']-$posts[0]['depth']-1+(isset($extradepth) ? $extradepth : 0));?></indent><?php
+                <indent><?php echo 3*($post['depth']-$posts[0]['depth']-1+(isset($extradepth) ? $extradepth : 0));?></indent><?php
                 $goDeeper = ($post['depth'] > $max_depth);
                 $goNext = ($post['depth']-$posts[0]['depth'] > 0 && 
                     end($post_count_stack)[0] > ($this->config->item('max_post_count')/($post['depth']-$posts[0]['depth'])));

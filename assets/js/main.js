@@ -80,7 +80,6 @@ function displayMessage(message, timeout){
 
 
 // ----------------------------------- AJAX CALLS ----------------------------------
-
 /**
  * base_url - lehekülje baas url. nt http://ksm.cs.ut.ee/
  * tid - topic id
@@ -117,11 +116,16 @@ function loadPostContent(base_url, tid, page_nr, root_post_id, offset, disable_h
     var resultDocument = xsltProcessor.transformToFragment(xml, document);
     if(page_nr != "1"){
         var postContainer = $('.post_container[id="'+replace_with_id+'-'+page_nr+'"]');
+        oldAjaxData[replace_with_id+'-'+page_nr] = postContainer.html();
     }else{
         var postContainer = $('.post_container[id="'+replace_with_id+'"]');
+        oldAjaxData[replace_with_id] = postContainer.html();
     }
     
+    
+    
     postContainer.removeClass("post_container");
+    postContainer.addClass("has_ajax_data");
     postContainer.empty().append(resultDocument); 
 }
 
@@ -151,13 +155,108 @@ function addHash(data){
             current_data.push(data);
             
             window.location.hash = "d="+btoa(JSON.stringify(current_data));
+            lastHash = window.location.hash;
         }
     }else{
         current_data = [data];
         
         window.location.hash = "d="+btoa(JSON.stringify(current_data));
+        lastHash = window.location.hash;
     }
 }
+
+var oldAjaxData = new Array();
+var lastHash = window.location.hash;
+
+$(window).on('hashchange', function() {
+    if(lastHash !== window.location.hash){
+        var current_dataNew = new Array();
+        if(window.location.hash.match("^#d=")){
+            var base64encodedNew = window.location.hash.substring(3);
+            current_dataNew = JSON.parse(atob(base64encodedNew));
+        }
+        
+        var current_dataOld = new Array();
+        if(lastHash.match("^#d=")){
+            var base64encodedOld = lastHash.substring(3);
+            current_dataOld = JSON.parse(atob(base64encodedOld));
+        }
+        
+
+        if(current_dataNew.length > current_dataOld.length){ //forward button clicked
+
+            //load content new - old
+            var add_data = new Array();
+            
+            for(var i = 0;i<current_dataNew.length;i++){
+                var newData = current_dataNew[i];
+                var inOld = false;
+                for(var j = 0;j<current_dataOld.length;j++){     
+                    var oldData = current_dataOld[j]; 
+                    if(oldData.a === newData.a &&
+                       oldData.b === newData.b &&
+                       oldData.c === newData.c &&
+                       oldData.d === newData.d &&
+                       oldData.e === newData.e &&
+                       oldData.f === newData.f &&
+                       oldData.g === newData.g &&
+                       oldData.h === newData.h){
+                        inOld = true;
+                        break;
+                    }
+                }
+                if(!inOld){
+                    add_data.push(newData);
+                }
+            }
+            
+            for(var i = 0;i<add_data.length;i++){
+                var ti = add_data[i];
+                loadPostContent(ti.a, ti.b, ti.c, ti.d, ti.e, true, ti.f, ti.g, ti.h);
+            }
+        }else if(current_dataNew.length < current_dataOld.length){ //back button clicked
+            //remove content old - new
+            var remove_data = new Array();
+            
+            for(var i = 0;i<current_dataOld.length;i++){
+                var oldData = current_dataOld[i];
+                var inNew = false;
+                for(var j = 0;j<current_dataNew.length;j++){
+                    var newData = current_dataNew[j]; 
+                    if(oldData.a === newData.a &&
+                       oldData.b === newData.b &&
+                       oldData.c === newData.c &&
+                       oldData.d === newData.d &&
+                       oldData.e === newData.e &&
+                       oldData.f === newData.f &&
+                       oldData.g === newData.g &&
+                       oldData.h === newData.h){
+                        inNew = true;
+                        break;
+                    }
+                }
+                if(!inNew){
+                    remove_data.push(oldData);
+                }
+            }
+            
+            for(var i = 0;i<remove_data.length;i++){
+                if(remove_data[i]["c"] !== "1"){
+                    var postContainer = $('.has_ajax_data[id="'+remove_data[i]["f"]+'-'+remove_data[i]["c"]+'"]');
+                    postContainer.empty().html(oldAjaxData[remove_data[i]["f"]+'-'+remove_data[i]["c"]]);
+                }else{
+                    var postContainer = $('.has_ajax_data[id="'+remove_data[i]["f"]+'"]');
+                    postContainer.empty().html(oldAjaxData[remove_data[i]["f"]]);
+                }
+                postContainer.removeClass("has_ajax_data");
+                postContainer.addClass("post_container");
+            }
+        }
+
+        lastHash = window.location.hash;
+    }
+
+});
 
 
 function checkHash() {

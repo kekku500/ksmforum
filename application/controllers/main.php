@@ -21,7 +21,7 @@ class Main extends CI_Controller {
         //javascript
         $this->template->addJS('assets/js/jquery-1.11.2.min.js');
         $this->template->addJS('assets/js/bootstrap.min.js');
-        $this->template->addJS('assets/js/main-min.js');
+        $this->template->addJS('assets/js/main.js');
         //css
         $this->template->addCSS('assets/css/bootstrap-min.css');
         $this->template->addCSS('assets/css/bootstrap-theme-min.css');

@@ -26,7 +26,7 @@ class Ajax extends CI_Controller {
         $data['response_disabled'] = false;      
         $data['posts'] = $this->post_model->getPostsPaginated($root_post_id, $page, $offset);
         $data['topic']['id'] = $tid;
-        $data['extradepth'] = $extradepth;
+        $data['extradepth'] = 0;
         $data['cur_url_encoded'] = $prev_url;
         $reply_count = $this->post_model->getPostReplyCount($root_post_id);
         $data['next_page_valid'] = ($offset+$this->config->item('max_post_count')*$page < $reply_count);
