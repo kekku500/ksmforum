@@ -39,7 +39,7 @@ xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
             post_container
         </xsl:attribute>
         <xsl:attribute name="style">
-            right: <xsl:value-of select="../indent" />%
+            margin-left: <xsl:value-of select="../indent" />%
         </xsl:attribute>
         <xsl:attribute name="id">
             <xsl:value-of select="../id" />
@@ -57,7 +57,7 @@ xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
             post_container
         </xsl:attribute>
         <xsl:attribute name="style">
-            right: <xsl:value-of select="../info/rootPostIndent" />%
+            margin-left: <xsl:value-of select="../info/rootPostIndent" />%
         </xsl:attribute>
         <xsl:attribute name="id">
             <xsl:value-of select="../info/rootPostId" />-<xsl:value-of select="../info/pageNr + 1" />
