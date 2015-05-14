@@ -11,19 +11,20 @@ xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
 <xsl:template match="post/data">
     <xsl:element name="div">
         <xsl:attribute name="class">
-            post_container
+            post_container small
         </xsl:attribute>
         <xsl:attribute name="style">
-            right: <xsl:value-of select="../indent" />%
+            margin-left: <xsl:value-of select="../indent" />%
         </xsl:attribute>
         <xsl:attribute name="id">
             <xsl:value-of select="../id" />
         </xsl:attribute>
         <h5>
-            <xsl:value-of select="edittime" /> - 
+			<xsl:value-of select="author" /> -
+            <xsl:value-of select="edittime" /><!-- - 
             user[<xsl:value-of select="author" />] - 
             id[<xsl:value-of select="../id" />] - 
-            parent[<xsl:value-of select="parentId" />]
+            parent[<xsl:value-of select="parentId" />]-->
             <xsl:apply-templates select="addpost" />
             <xsl:apply-templates select="editpost" />
             <xsl:apply-templates select="delpost" />

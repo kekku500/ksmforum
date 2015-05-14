@@ -6,7 +6,7 @@
 */
 ?>
 
-<table class="table-condensed table-hover forum_table">
+<table class="table-condensed table-hover forum_table small">
 <?php
 if(count($forums) > 0){
     //header ?>

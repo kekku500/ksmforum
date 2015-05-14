@@ -8,7 +8,7 @@
 
 // TIITEL?>
 
-<h3><?php echo $topic['name']; ?></h3>
+<h3 class="lead"><?php echo $topic['name']; ?></h3>
 
 <?php
 if(!isset($response_disabled))
@@ -25,9 +25,9 @@ if($post['parent_post_id'] != null){
 }
 ?>
 
-<div class='post_container' <?php echo 'id="'.$post['post_id'].'"'; ?>>
+<div class='post_container small' <?php echo 'id="'.$post['post_id'].'"'; ?>>
     <h5>
-  <?php echo $post['post_edit_time'].' - user['.$post['user_name'].'] - id['.$post['post_id'].']'.' - parent['.$post['parent_post_id'].']'; 
+  <?php echo $post['user_name']." - ".$post['post_edit_time']; 
         if ($this->auth->isLoggedIn() && !$post['deleted'] && !$response_disabled){
             //if($this->auth->getUserId() != $post['user_id']){ //kui praegune kasutaja ei loonud seda kommentaari
                 $segmentsadd = array('main', 'addpost', $post['post_id'], $cur_url_encoded);?>

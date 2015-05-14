@@ -649,8 +649,8 @@ h3#reply-title {
 
 * {
 
- margin: 0px;
- padding: 0px;
+ margin: 0%;
+ padding: 0%;
 
 }
 
@@ -689,7 +689,7 @@ h3#reply-title {
 
 #register_form_inner {
 	background-color: #E6E6E6;
-        border:5px solid #000000;
+        border:3px solid #000000;
 	position: relative;
 	left: -50%;
 }
@@ -704,7 +704,7 @@ h3#reply-title {
 
 #registergoogle_form_inner {
 	background-color: #E6E6E6;
-        border:5px solid #000000;
+        border:3px solid #000000;
 	position: relative;
 	left: -50%;
 }
@@ -719,11 +719,11 @@ h3#reply-title {
 
 .forum_table, th, td {
     border:1px solid black;
-    width: 80%;
+    width: 85%;
 }
 
 .forum_table {
-    width:95%;
+    width:98%;
     margin-left: auto;
     margin-right: auto;
 }
@@ -738,10 +738,10 @@ h3#reply-title {
 
 .post_container {
     border:1px solid;
-    position: relative;
+    /*position: relative;*/
 }
 
-.post_container h5 {
+/*.post_container h5 {
     margin-top: 0px;
     padding-top: 0px;
 }
@@ -749,7 +749,7 @@ h3#reply-title {
 .post_container h5 a {
     padding-left: 10px;
     padding-top: 0px;
-}
+}*/
 
 #messageNewPosts_outer {
 	position:fixed;
@@ -779,3 +779,6 @@ h3#reply-title {
 .settings_item_box {
     border:5px solid;
 }
+
+#navigator a{
+	line-height: 200%;
