@@ -21,12 +21,12 @@ xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
         </xsl:attribute>
         <h5>
 			<xsl:value-of select="author" /> -
-            <xsl:value-of select="edittime" /><!-- - 
+            <xsl:value-of select="edittime" /><xsl:text> </xsl:text><!-- - 
             user[<xsl:value-of select="author" />] - 
             id[<xsl:value-of select="../id" />] - 
             parent[<xsl:value-of select="parentId" />]-->
-            <xsl:apply-templates select="addpost" />
-            <xsl:apply-templates select="editpost" />
+            <xsl:apply-templates select="addpost" /><xsl:text> </xsl:text>
+            <xsl:apply-templates select="editpost" /><xsl:text> </xsl:text>
             <xsl:apply-templates select="delpost" />
         </h5>    
         <p><xsl:value-of select="content" /></p>
