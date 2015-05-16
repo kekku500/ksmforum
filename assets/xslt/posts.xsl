@@ -20,7 +20,7 @@ xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
             <xsl:value-of select="../id" />
         </xsl:attribute>
         <h5>
-			<xsl:value-of select="author" /> -
+            <xsl:value-of select="author" /> -
             <xsl:value-of select="edittime" /><xsl:text> </xsl:text><!-- - 
             user[<xsl:value-of select="author" />] - 
             id[<xsl:value-of select="../id" />] - 
@@ -36,7 +36,7 @@ xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
 <xsl:template match="post/pagination">
     <xsl:element name="div">
         <xsl:attribute name="class">
-            post_container
+            post_container post_pagination
         </xsl:attribute>
         <xsl:attribute name="style">
             margin-left: <xsl:value-of select="../indent" />%
@@ -54,7 +54,7 @@ xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
 <xsl:template match="postsdata/pagination">
     <xsl:element name="div">
         <xsl:attribute name="class">
-            post_container
+            post_container post_pagination
         </xsl:attribute>
         <xsl:attribute name="style">
             margin-left: <xsl:value-of select="../info/rootPostIndent" />%
