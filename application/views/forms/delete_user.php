@@ -1,4 +1,4 @@
-<div class="settings_item_box">    
+<div class="any_form">    
     <p><?php echo 'Kustuta kasutaja' ?></p>
 
     <?php 

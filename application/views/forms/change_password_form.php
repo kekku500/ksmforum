@@ -1,4 +1,4 @@
-<div class="settings_item_box">    
+<div class="any_form">    
     <p><?php echo $this->lang->line('changepassword_header'); ?></p>
     <?php 
     echo $this->multiform->validation_errors();
@@ -24,6 +24,7 @@
     </div>
     </form>
 </div>
+<hr>
 
 
 

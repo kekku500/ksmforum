@@ -1,3 +1,4 @@
+<div class="any_form">  
 <p><?php echo $this->lang->line('delforum_header');?></p>
 
 <p><?php echo $this->multiform->getSuccessMessage(); ?></p>
@@ -20,3 +21,4 @@ echo $this->multiform->form_open(current_url()); ?>
 
 
 </form>
+</div>

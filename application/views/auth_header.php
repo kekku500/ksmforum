@@ -1,7 +1,7 @@
 <div id="auth_header">
     <?php
     if(!$this->auth->isLoggedIn()){
-    ?>
+    ?>  
         <button onclick="registerPopup()"><?php echo $this->lang->line('button_register');?></button>
         <button onclick="loginPopup()"><?php echo $this->lang->line('button_login');?></button>
     <?php

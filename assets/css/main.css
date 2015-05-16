@@ -124,10 +124,39 @@ body {
 }
 
 #registergoogle_form_inner {
-	background-color: #E6E6E6;
-        border:3px solid #000000;
-	position: relative;
-	left: -50%;
+    background-color: #E6E6E6;
+    background: #fafafa;
+    position: relative;
+    left: -50%;
+    padding: 10px 10px;
+    border-radius: 5px;
+}
+
+#registergoogle_form_outer input{
+    margin-bottom:5px;
+}
+
+#registergoogle_form_outer input[type="text"] {
+    width: 100%;
+}
+
+#registergoogle_form_outer input[type="submit"] {
+    width: 100%;
+    height: 40px;
+    line-height: 40px;
+    font-weight: bold;
+    font-size: 1em;
+    color: #616161;
+    text-align: center;
+    background: #2196f3;
+    color: #ffffff;
+    border: 1px solid #1976d2;
+    border-radius: 3px;
+    margin-top:10px;
+}
+
+#registergoogle_form_outer input[type="submit"]:hover {
+    background: #42a5f5;
 }
 
 .add_topic_link {
@@ -160,9 +189,9 @@ body {
     margin-bottom: 0px;
 }
 
-.settings_item_box {
+/*.settings_item_box {
     border:5px solid;
-}
+}*/
 
 
 #auth_header {
@@ -176,16 +205,17 @@ body {
 #auth_header button {
     height: 40px;
     border: none;
-    width: 100px;
+    max-width: 200px;
     background: transparent;
     color: #ffffff;
     font-weight: bold;
     font-size: 1em;
     text-align:center;
+    padding: 0px 10px;
 }
 
 #auth_header  button:hover {
-	background: #42a5f5;
+    background: #42a5f5;
 }
 
 #auth_header  a {
