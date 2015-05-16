@@ -6,7 +6,7 @@
         
 }
 
-@media all and (max-width: 480px) {
+@media all and (max-width: 430px) {
     body{
         font-size: 3vw;
     }
