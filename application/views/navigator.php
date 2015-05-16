@@ -1,6 +1,6 @@
-<p id="navigator" class="lead">
+<div id="navigator">
 	<?php 
-	echo '[';
+
 	$path_count = count($path);
 	for($i = 0;$i<$path_count;$i++){
 		$p = $path[$i];
@@ -8,8 +8,8 @@
 		$url = $p[1];
 		echo '<a href="'.$url.'">'.$name.'</a>'; 
 		if($i < $path_count - 1)
-			echo ' => ';
+                    echo ' &rarr; ';
 	}
-	echo ']';
+
 	?>
-<p>
+</div>

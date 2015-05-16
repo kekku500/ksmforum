@@ -11,7 +11,7 @@
         }
     }else{
         ?>
-        <?php echo $this->lang->line('auth_header_user');?> <strong><?php echo $user['name']; ?> </strong>
+            <p><?php echo $this->lang->line('auth_header_user');?> <span><?php echo $user['name']; ?> </span></p>
         <?php
         $segments = array('main', 'logout', base64_encode(current_url()));
         echo anchor(site_url($segments), 'Logi välja');

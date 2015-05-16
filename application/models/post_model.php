@@ -127,7 +127,7 @@ class Post_model extends CI_Model {
                                 (select posts.*, root_depth, root_pos,
                                     (@a:=IF(depth = (root_depth+1), 1, 0)+@a) post_count,
                                     (@b:=IF(pos > root_pos and depth <= root_depth, 0, @b)) valid,
-                                    IF(depth >= root_depth+6, concat(p_pid, depth), id) as groupit,
+                                    IF(depth >= root_depth+".($this->config->item('max_post_depth')+1).", concat(p_pid, depth), id) as groupit,
                                     @num := 0, 
                                     @type := ''
                                 from posts, 

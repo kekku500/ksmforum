@@ -5,18 +5,21 @@
 * $topics elemendid := Array([topic_id], [topic_name], [topic_edit_time], 
  *                          [topic_views, topic_post_count, user_name])
 */
-?>
-
-<table class="table table-hover forum_table small">
-<?php
 
 if($this->auth->isLoggedIn()){
     $segments = array('main', 'addtopic', $fid);
   ?><p>
-      <a id ="add_topic_link" href="<?php echo site_url($segments); ?>">
+      <a class="btn-success marginme" id ="add_topic_link" href="<?php echo site_url($segments); ?>">
         <?php echo $this->lang->line('addtopics_ref_link'); ?></a>
     </p><?php 
 } 
+
+?>
+
+<table class="forum_table">
+<?php //table table-hover small
+
+
 
 if(count($topics) > 0){
     //header ?>

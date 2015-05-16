@@ -4,14 +4,14 @@ xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
     <xsl:for-each select="postsdata/posts/post">
         <xsl:apply-templates select="pagination" />
         <xsl:apply-templates select="data" />
-    </xsl:for-each>
+    </xsl:for-each>  
     <xsl:apply-templates select="postsdata/pagination" />
 </xsl:template>
 
 <xsl:template match="post/data">
     <xsl:element name="div">
         <xsl:attribute name="class">
-            post_container small
+            post_container
         </xsl:attribute>
         <xsl:attribute name="style">
             margin-left: <xsl:value-of select="../indent" />%
@@ -65,6 +65,7 @@ xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
         <xsl:apply-templates select="prevpage" />
         <xsl:apply-templates select="nextpage" />
         <xsl:apply-templates select="ajaxnext" />
+        
     </xsl:element>
 </xsl:template>
 
@@ -82,6 +83,9 @@ xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
 
 <xsl:template match="deeperpage">
     <xsl:element name="a">
+        <xsl:attribute name="class">
+            post_normal_a
+        </xsl:attribute>
         <xsl:attribute name="href">
             <xsl:value-of select="href"/>
         </xsl:attribute>
@@ -103,6 +107,9 @@ xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
 
 <xsl:template match="nextpage">
     <xsl:element name="a">
+        <xsl:attribute name="class">
+            post_normal_a
+        </xsl:attribute>
         <xsl:attribute name="href">
             <xsl:value-of select="href"/>
         </xsl:attribute>
@@ -112,6 +119,9 @@ xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
 
 <xsl:template match="prevpage">
     <xsl:element name="a">
+        <xsl:attribute name="class">
+            post_normal_a
+        </xsl:attribute>
         <xsl:attribute name="href">
             <xsl:value-of select="href"/>
         </xsl:attribute>
@@ -121,6 +131,9 @@ xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
 
 <xsl:template match="addpost">
     <xsl:element name="a">
+        <xsl:attribute name="class">
+            btn-success
+        </xsl:attribute>
         <xsl:attribute name="href">
             <xsl:value-of select="href"/>
         </xsl:attribute>
@@ -130,6 +143,9 @@ xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
 
 <xsl:template match="editpost">
     <xsl:element name="a">
+        <xsl:attribute name="class">
+            btn-primary
+        </xsl:attribute>
         <xsl:attribute name="href">
             <xsl:value-of select="href"/>
         </xsl:attribute>
@@ -139,6 +155,9 @@ xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
 
 <xsl:template match="delpost">
     <xsl:element name="a">
+        <xsl:attribute name="class">
+           btn-danger
+        </xsl:attribute>
         <xsl:attribute name="href">
             <xsl:value-of select="href"/>
         </xsl:attribute>

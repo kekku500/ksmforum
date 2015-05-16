@@ -5,8 +5,8 @@
 */
 ?>
 
-<table class="table table-hover forum_table small">
-<?php
+<table class="forum_table">
+<?php //table table-hover  small
 $category_id = -1;
 foreach ($forums as $forum){
     //kontrolli, kas foorumi kategooria on muutunud
